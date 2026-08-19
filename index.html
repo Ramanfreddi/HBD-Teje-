@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- CUSTOMIZE: Change the title -->
+    <title>Happy Birthday</title>
+    <!-- CUSTOMIZE: Change favicon to your own icon -->
+    <link rel="icon" type="image/png" href="favicon.png">
+    <!-- Preload Images - CUSTOMIZE: Update with your image names -->
+    <link rel="preload" as="image" href="photo-1.jpg">
+    <link rel="preload" as="image" href="photo-2.jpg">
+    <link rel="preload" as="image" href="photo-3.jpg">
+    <link rel="preload" as="image" href="gif1.gif">
+    <link rel="preload" as="image" href="gif2.gif">
+    <!-- Preload Audio -->
+    <link rel="preload" as="audio" href="hbd.mp3">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link rel="stylesheet" href="home.css">
+    <link rel="stylesheet" href="mobile-webview.css">
+</head>
+<body>
+    <div class="ambient ambient-one"></div>
+    <div class="ambient ambient-two"></div>
+    <div class="star-field" aria-hidden="true"></div>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-heart">💖</div>
+        <div class="loading-text">Loading magic...</div>
+    </div>
+
+    <audio id="bgMusic" loop>
+        <source src="hbd.mp3" type="audio/mpeg">
+    </audio>
+    <div class="music-toggle" id="musicToggle" title="Toggle Music">
+        <span class="music-icon">🎵</span>
+    </div>
+    <div class="cursor"></div>
+    <div class="container">
+        <div id="countdown-section" class="countdown-section">
+            <h2 class="countdown-title">Birthday Countdown</h2>
+            <div class="countdown-timer">
+                <div class="countdown-item">
+                    <span id="days" class="countdown-number">00</span>
+                    <span class="countdown-label">Days</span>
+                </div>
+                <div class="countdown-item">
+                    <span id="hours" class="countdown-number">00</span>
+                    <span class="countdown-label">Hours</span>
+                </div>
+                <div class="countdown-item">
+                    <span id="minutes" class="countdown-number">00</span>
+                    <span class="countdown-label">Minutes</span>
+                </div>
+                <div class="countdown-item">
+                    <span id="seconds" class="countdown-number">00</span>
+                    <span class="countdown-label">Seconds</span>
+                </div>
+            </div>
+        </div>
+        <section id="password-gate" class="password-gate" aria-labelledby="password-title" hidden>
+            <div class="password-card">
+                <div class="password-icon" aria-hidden="true">&#128273;</div>
+                <h2 id="password-title">One little secret...</h2>
+                <p>Enter the 6-digit password to open your birthday surprise.</p>
+                <form id="password-form" novalidate>
+                    <label class="sr-only" for="birthday-password">6-digit password</label>
+                    <input id="birthday-password" type="password" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" placeholder="••••••" required>
+                    <button type="submit">Unlock &#10024;</button>
+                </form>
+                <p id="password-error" class="password-error" role="alert" aria-live="polite"></p>
+            </div>
+        </section>
+        <div id="birthday-content" class="birthday-content" style="display: none;">
+            <!-- CUSTOMIZE: Change the age -->
+            <div class="level-up-badge">Level 23 Unlocked! 🎮</div>
+            <!-- CUSTOMIZE: Change the name -->
+            <h1>Happy Birthday Teje!!💗</h1>
+            <!-- CUSTOMIZE: Change nickname or remove this line -->
+            <p class="nickname-text">To my favorite [Maggie] 💕</p>
+            <div class="greeting"></div>
+            <!-- CUSTOMIZE: Change your name -->
+            <p class="from-text">- From Freddi 💖</p>
+            <button class="cta-button">Click to Enter 💕</button>
+        </div>
+    </div>
+
+    <script src="home.js"></script>
+</body>
+</html>

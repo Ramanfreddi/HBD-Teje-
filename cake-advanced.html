@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make a Wish! 🎂✨</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Poppins:wght@300;400;600;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link rel="preload" as="audio" href="hbd.mp3">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(-45deg, #fee9f7, #e8f5fe, #fef2e8, #f0ffe8);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            position: relative;
+            padding: 20px;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Floating background particles */
+        .ambient-particle {
+            position: fixed;
+            pointer-events: none;
+            border-radius: 50%;
+            animation: float 8s infinite ease-in-out;
+            z-index: 1;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.4; }
+            50% { transform: translateY(-30px) rotate(15deg); opacity: 0.8; }
+        }
+
+        /* Main Glassmorphism Card */
+        .cake-card {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 255, 255, 0.6);
+            border-radius: 30px;
+            padding: 40px 45px;
+            box-shadow: 0 20px 60px rgba(255, 105, 180, 0.25),
+                        0 0 40px rgba(138, 43, 226, 0.15);
+            text-align: center;
+            max-width: 700px;
+            width: 100%;
+            z-index: 10;
+            position: relative;
+            animation: slideInUp 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            font-family: 'Fredoka One', cursive;
+            font-size: 3rem;
+            background: linear-gradient(135deg, #53a8d6, #c22ab6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 20px rgba(255, 105, 180, 0.3);
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        .instruction {
+            font-size: 1.15rem;
+            color:  #c22ab5;
+            font-weight: 600;
+            margin-bottom: 30px;
+            animation: fadeIn 1s ease 0.3s backwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Cake Stage */
+        .cake-stage {
+            height: 360px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            position: relative;
+            margin-bottom: 30px;
+            animation: fadeIn 1s ease 0.5s backwards;
+        }
+
+        .cake {
+            position: relative;
+            width: 280px;
+            cursor: pointer;
+            filter: drop-shadow(0 20px 50px rgba(0, 0, 0, 0.2));
+            transition: transform 0.3s ease;
+        }
+
+        .cake:hover {
+            transform: scale(1.05);
+        }
+
+        /* Cake Plate */
+        .plate {
+            width: 340px;
+            height: 22px;
+            background: linear-gradient(180deg, #D4A574 0%, #C49464 50%, #B0845C 100%);
+            border-radius: 50% 50% 60% 60% / 30% 30% 50% 50%;
+            position: absolute;
+            bottom: -15px;
+            left: -30px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2),
+                        inset 0 3px 8px rgba(255, 255, 255, 0.3);
+        }
+
+        /* Cake Tiers */
+        .tier-bottom {
+            width: 280px;
+            height: 100px;
+            background: linear-gradient(180deg, #FAEAC8 0%, #F3DDB5 50%, #EDD0A5 100%);
+            border-radius: 20px 20px 10px 10px;
+            position: relative;
+            box-shadow: inset -12px 0 25px rgba(0, 0, 0, 0.1),
+                        inset 12px 0 25px rgba(255, 255, 255, 0.45),
+                        0 12px 30px rgba(0, 0, 0, 0.12),
+                        0 0 25px rgba(138, 43, 226, 0.12);
+        }
+
+        .tier-middle {
+            width: 220px;
+            height: 90px;
+            background: linear-gradient(180deg, #FCE8D0 0%, #F7DDBF 50%, #F2D4B0 100%);
+            border-radius: 18px 18px 10px 10px;
+            margin: 0 auto;
+            position: relative;
+            box-shadow: inset -10px 0 20px rgba(0, 0, 0, 0.08),
+                        inset 10px 0 20px rgba(255, 255, 255, 0.45),
+                        0 10px 20px rgba(0, 0, 0, 0.12),
+                        0 0 20px rgba(138, 43, 226, 0.1);
+        }
+
+        .tier-top {
+            width: 160px;
+            height: 80px;
+            background: linear-gradient(180deg, #FFD6E8 0%, #FFE4EB 40%, #FFCCE5 100%);
+            border-radius: 15px 15px 10px 10px;
+            margin: 0 auto;
+            position: relative;
+            box-shadow: inset -8px 8px 20px rgba(0, 0, 0, 0.08),
+                        inset 8px -8px 20px rgba(255, 255, 255, 0.6),
+                        0 15px 35px rgba(255, 105, 180, 0.25),
+                        0 0 30px rgba(138, 43, 226, 0.15);
+        }
+
+        /* Frosting */
+        .frosting {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 20px;
+            background: linear-gradient(90deg, transparent, #FF80CD 0%, #FF69B4 50%, #FF80CD 100%, transparent);
+            border-radius: 15px 15px 10px 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1),
+                        inset 0 1px 3px rgba(255, 255, 255, 0.5);
+        }
+
+        /* Cherries */
+        .cherries {
+            position: absolute;
+            top: -15px;
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            padding: 0 15px;
+        }
+
+        .cherry {
+            width: 16px;
+            height: 16px;
+            background: radial-gradient(circle at 5px 5px, #ff5252, #b71c1c);
+            border-radius: 50%;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            animation: bounce 2s infinite ease-in-out;
+        }
+
+        .cherry:nth-child(2) { animation-delay: 0.2s; }
+        .cherry:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Candles Container */
+        .candles-container {
+            position: absolute;
+            top: -45px;
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            padding: 0 20px;
+            z-index: 5;
+        }
+
+        .candle {
+            width: 12px;
+            height: 40px;
+            background: repeating-linear-gradient(45deg, #FFE4A0, #FFE4A0 4px, #FFD700 4px, #FFD700 8px);
+            border-radius: 4px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+        }
+
+        .candle:hover {
+            transform: scale(1.15);
+        }
+
+        /* Wick & Flame */
+        .wick {
+            width: 2px;
+            height: 10px;
+            background: #333;
+            position: absolute;
+            top: -10px;
+            left: 5px;
+        }
+
+        .flame {
+            width: 16px;
+            height: 26px;
+            background: radial-gradient(ellipse at bottom, #fff 20%, #ffeb3b 50%, #ff5722 100%);
+            border-radius: 50% 50% 40% 40%;
+            position: absolute;
+            top: -32px;
+            left: -2px;
+            box-shadow: 0 0 15px rgba(255, 152, 0, 0.8),
+                        0 0 25px rgba(255, 87, 34, 0.6),
+                        inset -1px 0 5px rgba(255, 255, 0, 0.5);
+            animation: flicker 0.6s infinite alternate ease-in-out;
+            transform-origin: center bottom;
+        }
+
+        @keyframes flicker {
+            0% { transform: scale(1) rotate(-2deg); opacity: 0.95; }
+            100% { transform: scale(1.2) rotate(3deg); opacity: 1; filter: drop-shadow(0 0 10px #ffeb3b); }
+        }
+
+        /* Smoke Effect */
+        .smoke {
+            position: absolute;
+            top: -30px;
+            left: 3px;
+            width: 10px;
+            height: 10px;
+            background: rgba(200, 200, 200, 0.8);
+            border-radius: 50%;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .is-blown .flame {
+            animation: extinguish 0.5s forwards ease-out;
+        }
+
+        .is-blown .smoke {
+            animation: rise 1.5s forwards ease-out;
+        }
+
+        @keyframes extinguish {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(0.3); opacity: 0; }
+        }
+
+        @keyframes rise {
+            0% { opacity: 0.8; transform: translateY(0) scale(1); }
+            100% { opacity: 0; transform: translateY(-50px) scale(2); filter: blur(5px); }
+        }
+
+       /* Magical Glowing Slice Line */
+.slice-line {
+    position: absolute;
+    top: -170%;
+    left: calc(50% - 2px); /* Calculates exact center based on width */
+    width: 4px; /* Slightly thicker for a strong glowing core */
+    height: 280%;
+    
+    /* Gradient that fades at the tips and uses your theme colors (pink & purple) in the middle */
+    background: linear-gradient(
+        to bottom, 
+        rgba(255, 255, 255, 0) 0%, 
+        rgba(255, 255, 255, 1) 15%, 
+        #ff69b4 50%, 
+        #8a2be2 85%, 
+        rgba(255, 255, 255, 0) 100%
+    );
+    
+    /* Layered shadows create a beautiful, soft neon glow */
+    box-shadow: 
+        0 0 8px rgba(255, 255, 255, 0.9),
+        0 0 20px rgba(255, 105, 180, 0.7),
+        0 0 35px rgba(138, 43, 226, 0.5);
+        
+    border-radius: 10px; /* Softens the edges of the line */
+    opacity: 0;
+    transform: scaleY(0);
+    transform-origin: top;
+    z-index: 20; /* Ensures it renders visually above all cake layers */
+    mix-blend-mode: screen; /* Blends the bright colors perfectly with the cake background */
+}
+
+        /* Action Buttons */
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeIn 1s ease 0.7s backwards;
+        }
+
+        .action-btn {
+            padding: 14px 32px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .btn-blow, .btn-cut, .btn-wish {
+            background: linear-gradient(135deg, #53a8d6, #c22ab6);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-5px) scale(1.08);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+        }
+
+        .action-btn:active {
+            transform: translateY(2px);
+        }
+
+        .action-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Wish Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+            z-index: 100;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .wish-modal {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 255, 255, 0.6);
+            border-radius: 30px;
+            padding: 45px 40px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            transform: scale(0.8);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: fadeIn 0.5s ease;
+        }
+
+        .modal-overlay.active .wish-modal {
+            transform: scale(1);
+        }
+
+        .wish-modal h2 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 3rem;
+            background: linear-gradient(135deg, #ff69b4, #8a2be2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+        }
+
+        .wish-modal p {
+            color: #4a148c;
+            font-size: 1.15rem;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+
+        /* Audio Control Pill */
+        .audio-pill {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: rgba(158, 72, 127, 0.301);
+            backdrop-filter: blur(15px);
+            padding: 12px 24px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            z-index: 50;
+            border: 2px solid rgba(255, 255, 255, 0.6);
+            animation: slideInRight 0.8s ease;
+        }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(100px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .audio-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 5px;
+        }
+
+        .audio-btn:hover {
+            transform: scale(1.25) rotate(10deg);
+        }
+
+        .audio-label {
+            font-size: 0.9rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #53a8d6, #c22ab6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            white-space: nowrap;
+        }
+
+        /* Wishes Navigation Button */
+        .wishes-nav-btn {
+            position: fixed;
+            bottom: 110px;
+            right: 30px;
+            background: linear-gradient(135deg, #ff69b4, #8a2be2);
+            backdrop-filter: blur(15px);
+            padding: 12px 24px;
+            border-radius: 50px;
+            text-decoration: none;
+            color: #fff;
+            font-weight: 700;
+            font-size: 1.05rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            z-index: 50;
+            border: 2px solid rgba(255, 255, 255, 0.6);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            animation: slideInRight 0.8s ease 0.2s backwards;
+            transition: all 0.3s ease;
+        }
+
+        .wishes-nav-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 230, 118, 0.3);
+        }
+
+        /* Navigation Back */
+        .nav-back {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            background: rgba(255, 255, 255, 0.35);
+            backdrop-filter: blur(15px);
+            padding: 12px 24px;
+            border-radius: 50px;
+            text-decoration: none;
+            color: #ff69b4;
+            font-weight: 700;
+            font-size: 1.05rem;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            z-index: 50;
+            border: 2px solid rgba(255, 255, 255, 0.6);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            animation: slideInLeft 0.8s ease;
+        }
+
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-100px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .nav-back:hover {
+            transform: translateX(-8px);
+            background: rgba(255, 255, 255, 0.647);
+            box-shadow: 0 8px 25px rgba(255, 105, 180, 0.2);
+        }
+
+        .games-nav {
+            top: auto;
+            bottom: 30px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.2rem; }
+            .cake-card { padding: 30px 25px; }
+            .cake { transform: scale(0.85); }
+            .cake-stage { height: 300px; }
+            .instruction { font-size: 1rem; }
+            .action-btn { font-size: 0.95rem; padding: 12px 24px; }
+            .audio-pill { bottom: 20px; right: 20px; padding: 10px 18px; }
+            .nav-back { top: 20px; left: 20px; padding: 10px 18px; font-size: 0.95rem; }
+            .games-nav { top: auto; bottom: 20px; }
+            .wish-modal { padding: 30px 25px; }
+            .wish-modal h2 { font-size: 2.2rem; }
+        }
+
+        @media (max-width: 480px) {
+            h1 { font-size: 1.8rem; }
+            .cake-card { padding: 25px 20px; }
+            .cake { transform: scale(0.65); }
+            .cake-stage { height: 250px; }
+            .instruction { font-size: 0.95rem; margin-bottom: 20px; }
+            .action-btn { font-size: 0.85rem; padding: 10px 18px; }
+            .btn-group { gap: 10px; }
+            .audio-pill { bottom: 15px; right: 15px; padding: 8px 14px; gap: 8px; }
+            .audio-label { font-size: 0.75rem; }
+            .nav-back { top: 15px; left: 15px; padding: 8px 14px; font-size: 0.85rem; }
+            .games-nav { top: auto; bottom: 15px; }
+            .wish-modal { padding: 25px 20px; width: 95%; }
+            .wish-modal h2 { font-size: 1.8rem; margin-bottom: 15px; }
+            .wish-modal p { font-size: 0.95rem; line-height: 1.6; margin-bottom: 20px; }
+            .wishes-nav-btn { bottom: 100px; right: 15px; padding: 10px 18px; font-size: 0.95rem; }
+        }
+
+        /* Keep the phone controls in separate, reachable areas instead of
+           letting the fixed navigation buttons compete for the same corners. */
+        @media (max-width: 600px) {
+            body {
+                justify-content: flex-start;
+                padding-top: max(76px, calc(env(safe-area-inset-top) + 64px));
+                padding-bottom: max(138px, calc(env(safe-area-inset-bottom) + 124px));
+                overflow-y: auto;
+            }
+
+            .cake-card {
+                margin: 0;
+            }
+
+            .btn-group {
+                width: 100%;
+            }
+
+            .btn-group > .action-btn {
+                flex: 0 1 280px;
+                width: min(100%, 280px);
+                justify-content: center;
+            }
+
+            .nav-back.games-nav {
+                left: max(12px, env(safe-area-inset-left));
+                bottom: max(12px, env(safe-area-inset-bottom));
+            }
+
+            .audio-pill {
+                right: max(12px, env(safe-area-inset-right));
+                bottom: max(12px, env(safe-area-inset-bottom));
+                width: 44px;
+                height: 44px;
+                padding: 4px;
+                justify-content: center;
+            }
+
+            .audio-pill .audio-label {
+                display: none;
+            }
+
+            .audio-pill .audio-btn {
+                width: 36px;
+                height: 36px;
+                padding: 0;
+            }
+
+            .wishes-nav-btn {
+                right: max(12px, env(safe-area-inset-right));
+                bottom: max(68px, calc(env(safe-area-inset-bottom) + 56px));
+                max-width: calc(100vw - 24px - env(safe-area-inset-left) - env(safe-area-inset-right));
+                padding: 10px 16px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="mobile-webview.css">
+</head>
+<body>
+
+    <!-- Navigation Back -->
+    <a href="index.html" class="nav-back">⬅️</a>
+    <a href="games.html" class="nav-back games-nav">🎮 Games</a>
+
+    <!-- Main Card -->
+    <div class="cake-card">
+        <h1>Blow Out The Candles! 🎂</h1>
+        <p class="instruction" id="status-text">Click the candles or tap the button to make a wish! 🌟</p>
+
+        <!-- Cake Stage -->
+        <div class="cake-stage">
+            <div class="cake" id="cake">
+                
+                <!-- Top Tier with Candles -->
+                <div class="tier-top">
+                    <div class="frosting"></div>
+                    <div class="cherries">
+                        <div class="cherry"></div>
+                        <div class="cherry"></div>
+                        <div class="cherry"></div>
+                    </div>
+                    
+                    <div class="candles-container">
+                        <div class="candle">
+                            <div class="wick"></div>
+                            <div class="flame"></div>
+                            <div class="smoke"></div>
+                        </div>
+                        <div class="candle">
+                            <div class="wick"></div>
+                            <div class="flame"></div>
+                            <div class="smoke"></div>
+                        </div>
+                        <div class="candle">
+                            <div class="wick"></div>
+                            <div class="flame"></div>
+                            <div class="smoke"></div>
+                        </div>
+                        <div class="candle">
+                            <div class="wick"></div>
+                            <div class="flame"></div>
+                            <div class="smoke"></div>
+                        </div>
+                        <div class="candle">
+                            <div class="wick"></div>
+                            <div class="flame"></div>
+                            <div class="smoke"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Middle Tier -->
+                <div class="tier-middle">
+                    <div class="frosting"></div>
+                </div>
+
+                <!-- Bottom Tier -->
+                <div class="tier-bottom">
+                    <div class="frosting"></div>
+                    <div class="slice-line" id="slice-line"></div>
+                </div>
+
+                <!-- Plate -->
+                <div class="plate"></div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="btn-group">
+            <button class="action-btn btn-blow" id="blow-btn" onclick="blowOutCandles()">
+                💨 Blow Candles
+            </button>
+            <button class="action-btn btn-cut" id="cut-btn" onclick="cutCake()" style="display: none;">
+                🔪 Cut The Cake
+            </button>
+            <button class="action-btn btn-wish" id="wish-btn" onclick="openWishModal()" style="display: none;">
+                💖 Read My Wish
+            </button>
+        </div>
+    </div>
+
+    <!-- See All Wishes Button -->
+    <a href="wishes.html" class="wishes-nav-btn">✨ See All Wishes ➢</a>
+
+    <!-- Wish Modal -->
+    <div class="modal-overlay" id="wish-modal">
+        <div class="wish-modal">
+            <h2>Happy Birthday! 💖</h2>
+            <p id="wish-text">
+                May your year ahead be as bright and beautiful as you are! 
+                Thank you for bringing so much joy and love into the world. 
+                Here's to celebrating YOU and making unforgettable memories together! 🌟✨
+            </p>
+            <button class="action-btn btn-blow" onclick="closeWishModal()">Close with Love 💕</button>
+        </div>
+    </div>
+
+    <!-- Audio Control Pill -->
+    <div class="audio-pill">
+        <button class="audio-btn" id="music-toggle" onclick="toggleAudio()">▶️</button>
+        <span class="audio-label">Birthday Beats 🎵</span>
+    </div>
+
+    <!-- Audio -->
+    <audio id="bg-music" loop>
+        <source src="hbd.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        let candlesLit = true;
+        let allCandlesBlown = false;
+        let isMusicPlaying = false;
+        const bgMusic = document.getElementById('bg-music');
+        const musicToggleBtn = document.getElementById('music-toggle');
+
+        // Create Ambient Floating Particles
+        function createAmbientParticles() {
+            const colors = ['rgba(255,105,180,0.3)', 'rgba(138,43,226,0.3)', 'rgba(255,215,0,0.3)', 'rgba(173,216,230,0.3)'];
+            for (let i = 0; i < 25; i++) {
+                const p = document.createElement('div');
+                p.className = 'ambient-particle';
+                const size = Math.random() * 30 + 8;
+                p.style.width = `${size}px`;
+                p.style.height = `${size}px`;
+                p.style.background = colors[Math.floor(Math.random() * colors.length)];
+                p.style.left = `${Math.random() * 100}vw`;
+                p.style.top = `${Math.random() * 100}vh`;
+                p.style.animationDuration = `${Math.random() * 8 + 5}s`;
+                p.style.animationDelay = `${Math.random() * 3}s`;
+                document.body.appendChild(p);
+            }
+        }
+        createAmbientParticles();
+
+        // Audio Controls
+        function toggleAudio() {
+            if (isMusicPlaying) {
+                bgMusic.pause();
+                musicToggleBtn.innerText = '▶️';
+            } else {
+                bgMusic.play().catch(e => console.log("Audio playback requires user interaction."));
+                musicToggleBtn.innerText = '⏸️';
+            }
+            isMusicPlaying = !isMusicPlaying;
+        }
+
+        // Blow Out Candles
+        function blowOutCandles() {
+            if (!candlesLit) return;
+            candlesLit = false;
+            
+            // Start audio if it isn't playing yet
+            if (!isMusicPlaying) {
+                toggleAudio();
+            }
+
+            const candles = document.querySelectorAll('.candle');
+            candles.forEach((candle, index) => {
+                setTimeout(() => {
+                    candle.classList.add('is-blown');
+                }, index * 200); 
+            });
+
+            setTimeout(() => {
+                allCandlesBlown = true;
+                document.getElementById('status-text').innerText = "Yay! Make a wish and let's cut the cake! 🔪🍰";
+                
+                // Button Transition
+                const blowBtn = document.getElementById('blow-btn');
+                blowBtn.style.display = 'none';
+                
+                const cutBtn = document.getElementById('cut-btn');
+                cutBtn.style.display = 'inline-flex';
+                
+                // Fire Confetti
+                confetti({
+                    particleCount: 100,
+                    angle: 60,
+                    spread: 50,
+                    origin: { x: 0, y: 0.5 }
+                });
+                confetti({
+                    particleCount: 100,
+                    angle: 120,
+                    spread: 50,
+                    origin: { x: 1, y: 0.5 }
+                });
+
+            }, candles.length * 200 + 500);
+        }
+
+        // Cut the Cake Action
+        function cutCake() {
+            const sliceLine = document.getElementById('slice-line');
+            
+            gsap.to(sliceLine, {
+                scaleY: 1,
+                opacity: 1,
+                duration: 1,
+                ease: "power2.inOut",
+                onComplete: () => {
+                    document.getElementById('status-text').innerText = "Perfect slice! Now for the best part... ✨";
+                    
+                    const cutBtn = document.getElementById('cut-btn');
+                    cutBtn.style.display = 'none';
+                    
+                    const wishBtn = document.getElementById('wish-btn');
+                    wishBtn.style.display = 'inline-flex';
+                    gsap.from("#wish-btn", { scale: 0, duration: 0.5, ease: "back.out(1.7)" });
+                }
+            });
+        }
+
+        // Modal Handlers
+        function openWishModal() {
+            document.getElementById('wish-modal').classList.add('active');
+            // Add a burst of confetti upon opening the wish
+            confetti({
+                particleCount: 200,
+                spread: 160,
+                origin: { y: 0.3 }
+            });
+        }
+
+        function closeWishModal() {
+            document.getElementById('wish-modal').classList.remove('active');
+        }
+
+        // Optional: click on cake triggers blow out as well
+        document.getElementById('cake').addEventListener('click', () => {
+            if (candlesLit) {
+                blowOutCandles();
+            }
+        });
+    </script>
+</body>
+</html>

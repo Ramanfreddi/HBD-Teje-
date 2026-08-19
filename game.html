@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Catch the Love</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root { 
+      --pink: #ff5faa; 
+      --purple: #8d60dd; 
+      --ink: #713a78; 
+    } 
+    * { 
+      box-sizing: border-box; 
+    }
+    body { 
+      min-height: 100vh; 
+      margin: 0; 
+      overflow: hidden; 
+      display: grid; 
+      place-items: center; 
+      color: var(--ink); 
+      font-family: Fredoka, system-ui, sans-serif; 
+      background: linear-gradient(135deg, #fff1fa, #eaf7ff 48%, #fff5df); 
+    }
+    body::before, body::after { 
+      content: ''; 
+      position: fixed; 
+      width: 35vmax; 
+      aspect-ratio: 1; 
+      border-radius: 50%; 
+      filter: blur(35px); 
+      opacity: .32; 
+      pointer-events: none; 
+    } 
+    body::before { 
+      background: #ff90c8; 
+      top: -15vmax; 
+      left: -12vmax; 
+    } 
+    body::after { 
+      background: #91d9ff; 
+      right: -13vmax; 
+      bottom: -15vmax; 
+    }
+    .card { 
+      width: min(92vw, 690px); 
+      min-height: 570px; 
+      padding: 24px; 
+      position: relative; 
+      overflow: hidden; 
+      text-align: center; 
+      border: 1px solid rgba(255, 255, 255, .82); 
+      border-radius: 32px; 
+      background: rgba(255, 255, 255, .5); 
+      box-shadow: 0 24px 70px rgba(127, 71, 149, .2); 
+      backdrop-filter: blur(13px); 
+    }
+    .back { 
+      position: absolute; 
+      left: 19px; 
+      top: 18px; 
+      text-decoration: none; 
+      color: var(--purple); 
+      font-size: .95rem; 
+      font-weight: 700; 
+    } 
+    h1 { 
+      margin: 28px 0 5px; 
+      font-size: clamp(2rem, 6vw, 3.3rem); 
+      background: linear-gradient(100deg, var(--pink), var(--purple)); 
+      -webkit-background-clip: text; 
+      background-clip: text; 
+      color: transparent; 
+    } 
+    .subtitle { 
+      margin: 0 0 20px; 
+      font-size: 1.05rem; 
+    }
+    .stats { 
+      display: flex; 
+      justify-content: center; 
+      gap: 14px; 
+      margin-bottom: 16px; 
+    } 
+    .stat { 
+      min-width: 112px; 
+      padding: 8px 16px; 
+      border-radius: 16px; 
+      color: #824681; 
+      background: rgba(255, 255, 255, .68); 
+      box-shadow: 0 5px 13px rgba(108, 57, 122, .09); 
+    } 
+    .stat b { 
+      display: block; 
+      font-size: 1.36rem; 
+      color: var(--pink); 
+    }
+    #playground { 
+      height: 330px; 
+      position: relative; 
+      border-radius: 23px; 
+      overflow: hidden; 
+      border: 2px dashed rgba(255, 95, 170, .3); 
+      background: linear-gradient(160deg, rgba(255, 255, 255, .7), rgba(255, 232, 247, .58)); 
+    }
+    .heart { 
+      position: absolute; 
+      border: 0; 
+      background: none; 
+      padding: 0; 
+      cursor: pointer; 
+      font-size: clamp(2rem, 5vw, 3.2rem); 
+      filter: drop-shadow(0 5px 6px rgba(255, 79, 164, .22)); 
+      animation: pop .25s ease-out, bob 1.3s ease-in-out infinite alternate; 
+    } 
+    .heart:hover { 
+      filter: drop-shadow(0 0 10px #ff7dc0); 
+    } 
+    .heart:active { 
+      transform: scale(.78); 
+    }
+    .floaty { 
+      position: absolute; 
+      pointer-events: none; 
+      font-size: 1.5rem; 
+      animation: floatUp .8s ease-out forwards; 
+    } 
+    #message { 
+      min-height: 31px; 
+      margin: 14px 0 4px; 
+      font-size: 1.1rem; 
+      font-weight: 600; 
+    }
+    .play { 
+      border: 0; 
+      border-radius: 999px; 
+      padding: 12px 28px; 
+      cursor: pointer; 
+      color: #fff; 
+      font: 700 1rem Fredoka, sans-serif; 
+      background: linear-gradient(110deg, var(--pink), var(--purple)); 
+      box-shadow: 0 8px 20px rgba(176, 67, 155, .26); 
+      transition: transform .2s, box-shadow .2s; 
+    } 
+    .play:hover { 
+      transform: translateY(-3px) scale(1.04); 
+      box-shadow: 0 12px 25px rgba(176, 67, 155, .36); 
+    }
+    .overlay { 
+      position: absolute; 
+      inset: 0; 
+      display: grid; 
+      place-content: center; 
+      gap: 12px; 
+      padding: 30px; 
+      z-index: 4; 
+      background: rgba(255, 255, 255, .76); 
+      backdrop-filter: blur(5px); 
+    } 
+    .overlay.hidden { 
+      display: none; 
+    } 
+    .overlay h2 { 
+      font-size: 2rem; 
+      margin: 0; 
+    } 
+    .overlay p { 
+      margin: 0 0 6px; 
+      font-size: 1.08rem; 
+    }
+    @keyframes pop { from { transform: scale(0); } to { transform: scale(1); } } 
+    @keyframes bob { to { translate: 0 -7px; } } 
+    @keyframes floatUp { to { transform: translateY(-38px) scale(1.3); opacity: 0; } } 
+    @media(max-width: 520px) { 
+      .card { min-height: 530px; padding: 16px; } 
+      #playground { height: 310px; } 
+      .back { top: 13px; left: 14px; } 
+    } 
+    @media(prefers-reduced-motion: reduce) { 
+      *, *::before, *::after { animation-duration: .01ms !important; } 
+    }
+  </style>
+  <link rel="stylesheet" href="mobile-webview.css">
+</head>
+<body>
+  <main class="card">
+    <a class="back" href="games.html">&larr; Back to Games</a>
+    <h1>Catch the Love! &#128150;</h1>
+    <p class="subtitle">Tap every heart before it floats away.</p>
+    <div class="stats">
+      <div class="stat"><b id="score">0</b>hearts</div>
+      <div class="stat"><b id="timer">20</b>seconds</div>
+    </div>
+    <section id="playground" aria-label="Heart catching game"></section>
+    <p id="message">Ready for a tiny love challenge?</p>
+    <button class="play" id="playButton">Start the game &#10024;</button>
+    <div class="overlay" id="overlay">
+      <h2>Ready, Teje? &#127800;</h2>
+      <p>Catch 12 hearts in 20 seconds for a sweet surprise.</p>
+      <button class="play" id="startButton">Let's play!</button>
+    </div>
+  </main>
+
+  <script>
+    const playground = document.getElementById('playground'),
+          scoreEl = document.getElementById('score'),
+          timerEl = document.getElementById('timer'),
+          message = document.getElementById('message'),
+          overlay = document.getElementById('overlay'),
+          startButton = document.getElementById('startButton'),
+          playButton = document.getElementById('playButton'); 
+
+    let score = 0, time = 20, active = false, spawnLoop, clock; 
+    const hearts = ['&#128150;', '&#128149;', '&#128151;', '&#10024;'];
+
+    function clearGame() {
+      clearInterval(spawnLoop);
+      clearInterval(clock);
+      playground.replaceChildren();
+    } 
+
+    function addHeart() {
+      if (!active) return;
+      const heart = document.createElement('button');
+      heart.className = 'heart';
+      heart.type = 'button';
+      heart.innerHTML = hearts[Math.floor(Math.random() * hearts.length)];
+      heart.style.left = (4 + Math.random() * 84) + '%';
+      heart.style.top = (5 + Math.random() * 72) + '%';
+      
+      const vanish = setTimeout(() => heart.remove(), 1250 + Math.random() * 650);
+      
+      heart.addEventListener('click', () => {
+        clearTimeout(vanish);
+        score++;
+        scoreEl.textContent = score;
+        
+        const sparkle = document.createElement('span');
+        sparkle.className = 'floaty';
+        sparkle.innerHTML = '&#10024; +1';
+        sparkle.style.left = heart.style.left;
+        sparkle.style.top = heart.style.top;
+        playground.append(sparkle);
+        
+        heart.remove();
+        if (score === 12) message.textContent = 'You did it! The love meter is overflowing!';
+      });
+      
+      playground.append(heart);
+    }
+
+    function endGame() {
+      active = false;
+      clearGame();
+      const won = score >= 12;
+      overlay.innerHTML = won 
+        ? '<h2>Love Champion! &#127942;</h2><p>You caught ' + score + ' hearts. You make every moment brighter!</p><button class="play" id="again">Play again</button>'
+        : '<h2>So close! &#128150;</h2><p>You caught ' + score + ' hearts. One more round?</p><button class="play" id="again">Try again</button>';
+      overlay.classList.remove('hidden');
+      document.getElementById('again').addEventListener('click', startGame);
+      playButton.textContent = 'Play again &#10024;';
+      message.textContent = won ? 'A little extra love, just for you.' : 'The hearts are cheering for you!';
+    }
+
+    function startGame() {
+      clearGame();
+      score = 0;
+      time = 20;
+      active = true;
+      scoreEl.textContent = score;
+      timerEl.textContent = time;
+      overlay.classList.add('hidden');
+      message.textContent = 'Go, go, go! Catch the sparkly hearts!';
+      addHeart();
+      spawnLoop = setInterval(addHeart, 620);
+      clock = setInterval(() => {
+        time--;
+        timerEl.textContent = time;
+        if (time <= 0) endGame();
+      }, 1000);
+    } 
+
+    startButton.addEventListener('click', startGame);
+    playButton.addEventListener('click', startGame);
+  </script>
+</body>
+</html>

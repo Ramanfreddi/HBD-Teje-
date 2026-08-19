@@ -1,0 +1,285 @@
+@import url('https://fonts.googleapis.com/css2?family=Bubblegum+Sans&family=Comic+Neue:wght@700&family=Quicksand:wght@500&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    cursor: none;
+}
+
+body {
+    min-height: 100vh;
+    background: linear-gradient(135deg,
+                    rgba(255, 209, 220, 0.85) 0%,
+                    rgba(230, 230, 250, 0.85) 25%,
+                    rgba(255, 239, 213, 0.85) 50%,
+                    rgba(230, 230, 250, 0.85) 75%,
+                    rgba(255, 209, 220, 0.85) 100%),
+                    url('background-movable.gif');
+    background-size: 400% 400%, cover;
+    background-position: center, center;
+    background-attachment: fixed;
+    animation: gradientFlow 15s ease infinite;
+    font-family: 'Quicksand', sans-serif;
+    overflow-x: hidden;
+    color: #4a4a4a;
+}
+
+.custom-cursor {
+    width: 30px;
+    height: 30px;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    mix-blend-mode: difference;
+    transition: transform 0.1s;
+}
+
+.custom-cursor svg {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 0 5px rgba(255, 182, 193, 0.5));
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    padding-top: calc(env(safe-area-inset-top) + 75px);
+    padding-bottom: 1rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+h1 {
+    font-family: 'Bubblegum Sans', cursive;
+    font-size: 3rem;
+    color: #ff69b4;
+    text-shadow: 2px 2px 4px rgba(255, 105, 180, 0.3);
+    margin-bottom: 1.5rem;
+    animation: bounce 1s ease infinite;
+}
+
+.reason-card {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 20px;
+    padding: 2rem 1.5rem;
+    margin: 0 auto 2.5rem auto;
+    max-width: 600px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.reason-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(255, 105, 180, 0.2);
+}
+
+.reason-text {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    position: relative;
+    z-index: 2;
+}
+
+.gif-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Change 0.95 to a lower number like 0.2 - 0.4 if you want white background lighter */
+    background: rgba(255, 255, 255, 0.4); 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.3s;
+    z-index: 1; /* Keeps GIF behind text (z-index: 2) */
+}
+
+/* ADD THIS RULE to control how faint the GIF itself looks */
+.gif-overlay img {
+    opacity: 0.65; /* Lower value = more faint/light (e.g., 0.15 for very light, 0.4 for medium) */
+    max-width: 85%;
+    max-height: 85%;
+    object-fit: contain;
+}
+/* Button pushed down cleanly from card */
+.shuffle-button {
+    background: linear-gradient(45deg, #ff69b4, #ff99cc);
+    border: none;
+    border-radius: 50px;
+    padding: 1rem 2.5rem;
+    font-size: 1.2rem;
+    color: white;
+    margin: 2.5rem auto 0.5rem auto;
+    display: inline-block;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-family: 'Comic Neue', cursive;
+    box-shadow: 0 5px 15px rgba(255, 105, 180, 0.3);
+}
+
+.shuffle-button.story-mode {
+    background: linear-gradient(45deg, #9b6dff, #ff6dc7);
+    transform: scale(1.1);
+}
+
+.shuffle-button:hover {
+    transform: scale(1.1);
+}
+
+.shuffle-button.story-mode:hover {
+    transform: scale(1.2);
+}
+
+.reason-counter {
+    font-size: 0.9rem;
+    color: #ff69b4;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    opacity: 0.7;
+}
+
+/* Reduced height & margin to eliminate empty bottom scroll space */
+.ending-section {
+    margin-top: 0.5rem;
+    padding: 0;
+    text-align: center;
+}
+
+.ending-text {
+    font-family: 'Bubblegum Sans', cursive;
+    font-size: 2rem;
+    color: #ff69b4;
+    margin-bottom: 1rem;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.teddy-hug {
+    width: 200px;
+    margin: 0 auto;
+    transform: scale(0);
+}
+
+.teddy-hug img {
+    width: 100%;
+    border-radius: 15px;
+}
+
+.floating {
+    position: fixed;
+    pointer-events: none;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes gradientFlow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.music-toggle {
+    position: fixed;
+    top: calc(env(safe-area-inset-top) + 15px);
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(45deg, #ff69b4, #ff99cc);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 1000;
+    box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.music-toggle:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(255, 105, 180, 0.6);
+}
+
+.music-toggle.playing {
+    animation: pulse 1s ease-in-out infinite;
+}
+
+.music-icon {
+    font-size: 1.5rem;
+}
+
+.back-btn {
+    position: fixed;
+    top: calc(env(safe-area-inset-top) + 15px);
+    left: 20px;
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(45deg, #ff69b4, #ff99cc);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 1000;
+    box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4);
+    transition: transform 0.3s, box-shadow 0.3s;
+    text-decoration: none;
+    color: white;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.back-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(255, 105, 203, 0.825);
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding-top: calc(env(safe-area-inset-top) + 80px);
+        padding-bottom: 0.5rem;
+    }
+    h1 { 
+        font-size: 2rem; 
+        margin-bottom: 1rem;
+    }
+    .reason-card { 
+        margin: 0 auto 3rem auto; 
+        padding: 1.5rem 1rem;
+    }
+    .reason-text { font-size: 1rem; }
+    .shuffle-button {
+        margin-top: 2.5rem;
+        margin-bottom: 0.5rem;
+    }
+    .ending-section {
+        margin-top: 0.5rem;
+    }
+}
+
+@media (hover: none) and (pointer: coarse) {
+    * { cursor: auto !important; }
+    .cursor, .custom-cursor { display: none !important; }
+}

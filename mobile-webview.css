@@ -1,0 +1,117 @@
+/* Shared phone and in-app webview finishing touches. */
+html {
+    min-height: 100%;
+    /* Keep the birthday UI in its designed light appearance, even when the device uses dark mode. */
+    color-scheme: light only;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    background: #fff0fa;
+    overflow-x: hidden;
+}
+
+body {
+    min-height: 100vh;
+    min-height: 100dvh;
+    overscroll-behavior-y: none;
+    -webkit-tap-highlight-color: transparent;
+    overflow-x: hidden;
+}
+
+a, button, input, select, textarea {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
+img, picture, video, canvas, svg { max-width: 100%; }
+
+button, [role="button"], input, select, textarea { font: inherit; }
+
+@media (hover: none) and (pointer: coarse) {
+    * { cursor: auto !important; }
+    .cursor, .custom-cursor { display: none !important; }
+}
+
+@media (max-width: 480px) {
+    .music-toggle { top: max(14px, env(safe-area-inset-top)); right: max(14px, env(safe-area-inset-right)); }
+    .back-btn, .nav-back { top: max(14px, env(safe-area-inset-top)); left: max(14px, env(safe-area-inset-left)); }
+    .nav-back.games-nav { top: auto; bottom: max(14px, env(safe-area-inset-bottom)); }
+}
+
+/* Phone layout: keep controls comfortably tappable and content inside the viewport. */
+@media (max-width: 600px) {
+    body {
+        min-height: 100dvh;
+        padding-left: max(12px, env(safe-area-inset-left));
+        padding-right: max(12px, env(safe-area-inset-right));
+    }
+
+    h1 { font-size: clamp(1.75rem, 8vw, 2.45rem) !important; line-height: 1.12; }
+    h2 { font-size: clamp(1.3rem, 6vw, 1.8rem); line-height: 1.2; }
+    p, .intro, .instruction, .prompt { font-size: clamp(.94rem, 4vw, 1.05rem); line-height: 1.5; }
+
+    button,
+    .cta-button,
+    .action-btn,
+    .shuffle-button,
+    .next-btn,
+    .goodbye-btn,
+    .share-btn,
+    .spin,
+    .new,
+    .btn,
+    .play {
+        min-height: 44px;
+        max-width: 100%;
+        line-height: 1.2;
+    }
+
+    .back-btn, .nav-back, .back {
+        top: max(12px, env(safe-area-inset-top));
+        left: max(12px, env(safe-area-inset-left));
+        min-height: 44px;
+        max-width: calc(100vw - 24px - env(safe-area-inset-left) - env(safe-area-inset-right));
+    }
+
+    /* The in-card game navigation sits above the heading instead of covering it. */
+    .card > .back + h1, .card > .back-btn + h1 { margin-top: 56px; }
+
+    .music-toggle {
+        top: max(12px, env(safe-area-inset-top));
+        right: max(12px, env(safe-area-inset-right));
+        width: 44px;
+        height: 44px;
+    }
+
+    .btn-group, .buttons, .instructions, .countdown-timer {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .btn-group > *, .buttons > * { flex: 1 1 140px; }
+
+    /* The catch game remains reachable on short phone screens. */
+    body:has(#playground) { overflow-y: auto; }
+    #playground { height: min(48dvh, 310px); }
+
+    /* Fixed GIF backgrounds are expensive and visibly stutter in mobile webviews. */
+    body { background-attachment: scroll !important; }
+    .gif-overlay img { width: 100%; height: auto; object-fit: cover; }
+}
+
+@media (max-width: 380px) {
+    body { padding-left: max(8px, env(safe-area-inset-left)); padding-right: max(8px, env(safe-area-inset-right)); }
+    .cake-card, .birthday-content, .password-card, .card { border-radius: 22px; }
+    .countdown-timer { gap: .65rem; }
+    .countdown-item { min-width: 66px; padding: .8rem .65rem; }
+    .countdown-number { font-size: 2rem; }
+}
+
+/* Respect a user's motion setting and prevent animation-heavy pages from janking. */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+        scroll-behavior: auto !important;
+    }
+}

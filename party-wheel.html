@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Our Little Wheel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      font-family: Fredoka, system-ui, sans-serif;
+      color: #563c67;
+      background: 
+        radial-gradient(circle at 10% 10%, #fff5c8 0 7%, transparent 25%),
+        radial-gradient(circle at 90% 85%, #ccecff 0 8%, transparent 30%),
+        linear-gradient(135deg, #fce9f4, #f0eaff 52%, #e9f9ff);
+    }
+    .card {
+      width: min(94vw, 750px);
+      position: relative;
+      padding: 28px;
+      text-align: center;
+      border-radius: 32px;
+      border: 1px solid rgba(255, 255, 255, 0.88);
+      background: rgba(255, 255, 255, 0.57);
+      box-shadow: 0 24px 70px rgba(85, 52, 110, 0.18);
+      backdrop-filter: blur(13px);
+    }
+    .back {
+      position: absolute;
+      top: 18px;
+      left: 21px;
+      text-decoration: none;
+      color: #8860d9;
+      font-size: 0.92rem;
+      font-weight: 700;
+    }
+    h1 {
+      font-size: clamp(2rem, 6vw, 3.2rem);
+      margin: 26px 0 5px;
+      background: linear-gradient(100deg, #fa5e9e, #8464d8);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .intro {
+      margin: 0 0 21px;
+      font-size: 1.06rem;
+    }
+    .game {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 26px;
+      align-items: center;
+      max-width: 650px;
+      margin: auto;
+    }
+    .wheel-wrap {
+      position: relative;
+      width: min(73vw, 310px);
+      aspect-ratio: 1;
+      margin: auto;
+    }
+    .pointer {
+      position: absolute;
+      z-index: 3;
+      left: 50%;
+      top: -5px;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 19px solid transparent;
+      border-right: 19px solid transparent;
+      border-top: 42px solid #f45b9c;
+      filter: drop-shadow(0 3px 2px rgba(92, 49, 97, 0.25));
+    }
+    .wheel {
+      width: 100%;
+      height: 100%;
+      border: 9px solid #fff;
+      border-radius: 50%;
+      background: conic-gradient(
+        #ff8abd 0deg 30deg,
+        #9879df 30deg 60deg,
+        #7bc9e9 60deg 90deg,
+        #ffe077 90deg 120deg,
+        #ffac79 120deg 150deg,
+        #a8dc97 150deg 180deg,
+        #ff94c5 180deg 210deg,
+        #a489e5 210deg 240deg,
+        #89d9e8 240deg 270deg,
+        #ffdf81 270deg 300deg,
+        #ffa991 300deg 330deg,
+        #b6e0a5 330deg 360deg
+      );
+      box-shadow: 0 12px 26px rgba(100, 57, 119, 0.22), inset 0 0 0 2px rgba(80, 45, 100, 0.11);
+      transition: transform 4.2s cubic-bezier(0.12, 0.7, 0.06, 1);
+    }
+    .wheel::after {
+      content: '23';
+      position: absolute;
+      inset: 50%;
+      width: 66px;
+      height: 66px;
+      transform: translate(-50%, -50%);
+      display: grid;
+      place-items: center;
+      border: 7px solid #fff;
+      border-radius: 50%;
+      background: #ff5da6;
+      color: #fff;
+      font-size: 1.65rem;
+      box-shadow: 0 3px 9px rgba(86, 41, 94, 0.22);
+    }
+    .panel {
+      min-height: 285px;
+      padding: 22px 18px;
+      display: grid;
+      align-content: center;
+      gap: 14px;
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.63);
+      box-shadow: 0 7px 19px rgba(103, 60, 123, 0.1);
+    }
+    .panel h2 {
+      margin: 0;
+      color: #f45b9c;
+      font-size: 1.5rem;
+    }
+    .prompt {
+      min-height: 76px;
+      margin: 0;
+      font-size: 1.13rem;
+      line-height: 1.45;
+      font-weight: 600;
+    }
+    .spin {
+      border: 0;
+      border-radius: 999px;
+      padding: 13px 26px;
+      color: #fff;
+      cursor: pointer;
+      font: 700 1.05rem Fredoka, sans-serif;
+      background: linear-gradient(100deg, #ff5f9e, #8566dc);
+      box-shadow: 0 8px 18px rgba(162, 71, 151, 0.28);
+      transition: 0.2s;
+    }
+    .spin:hover:not(:disabled) {
+      transform: translateY(-3px) scale(1.04);
+    }
+    .spin:disabled {
+      opacity: 0.6;
+      cursor: wait;
+    }
+    .round {
+      font-size: 0.9rem;
+      color: #8a658c;
+    }
+    .spark {
+      position: fixed;
+      pointer-events: none;
+      font-size: 1.6rem;
+      animation: up 0.9s ease-out forwards;
+    }
+    @keyframes up {
+      to {
+        transform: translate(var(--x), -105px) rotate(130deg);
+        opacity: 0;
+      }
+    }
+    @media (max-width: 590px) {
+      .card { padding: 23px 15px; }
+      .game { grid-template-columns: 1fr; gap: 13px; }
+      .wheel-wrap { width: min(72vw, 285px); }
+      .panel { min-height: 190px; }
+      .back { top: 14px; left: 15px; }
+    }
+  </style>
+  <link rel="stylesheet" href="mobile-webview.css">
+</head>
+<body>
+  <main class="card">
+    <a class="back" href="games.html">&larr; Back to Games</a>
+    <h1>Our Little Wheel &#128150;</h1>
+    <p class="intro">Just you two — spin for a sweet prompt, a memory, or a tiny moment together.</p>
+    <section class="game">
+      <div class="wheel-wrap">
+        <div class="pointer"></div>
+        <div class="wheel" id="wheel"></div>
+      </div>
+      <div class="panel">
+        <h2 id="title">Ready for us time?</h2>
+        <p class="prompt" id="prompt">Spin the wheel and let it choose a little birthday moment for the two of you.</p>
+        <button class="spin" id="spin">Spin for us &#10024;</button>
+        <span class="round" id="round">Our moment 1</span>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const wheel = document.getElementById('wheel'),
+          spin = document.getElementById('spin'),
+          title = document.getElementById('title'),
+          prompt = document.getElementById('prompt'),
+          round = document.getElementById('round');
+
+    const prompts = [
+      ['Selfie Demand', 'Take a super funny, ugly selfie right now and send it to me!'],
+      ['Free Chocolate', 'Screenshot this! I owe you your favorite chocolate next time we meet.'],
+      ['Granny Teju', 'You are 23 now! Time to start complaining about back pain, grandma.'],
+      ['Singing Time', 'Send me a voice note of you singing Happy Birthday to yourself in a funny cartoon voice!'],
+      ['Boss Teju', 'You are the boss today! Text me one silly order and I have to do it right now.'],
+      ['Virtual Squish', 'Imagine me pulling your cheeks right now! You are the absolute cutest.'],
+      ['Monkey Business', 'Send me a monkey emoji 🐒 right now so I know you are smiling at your phone.'],
+      ['Star Wish', 'Close your eyes, make a big wish, and then text me a star ⭐!'],
+      ['The Happy Law', 'Because it is your birthday, you are not allowed to be sad today. That is the law!'],
+      ['Pocket Hug', 'I just sent a tiny virtual hug to your phone. Did you feel it?'],
+      ['Memory Check', 'Think of the dumbest, funniest thing we ever did and text me just the first word of it.'],
+      ['Big Promise', 'No matter how old you get, I promise I will always be here to annoy you. Happy Birthday!']
+    ];
+
+    let rotation = 0, turn = 1;
+
+    function celebrate() {
+      for (let i = 0; i < 16; i++) {
+        const s = document.createElement('i');
+        s.className = 'spark';
+        s.innerHTML = ['&#10024;', '&#128150;', '&#127775;'][i % 3];
+        s.style.left = (30 + Math.random() * 40) + 'vw';
+        s.style.top = (40 + Math.random() * 22) + 'vh';
+        s.style.setProperty('--x', (Math.random() * 160 - 80) + 'px');
+        document.body.append(s);
+        setTimeout(() => s.remove(), 950);
+      }
+    }
+
+    spin.addEventListener('click', () => {
+      spin.disabled = true;
+      title.textContent = 'Spinning...';
+      prompt.textContent = 'Let a little birthday magic choose.';
+
+      const pick = Math.floor(Math.random() * prompts.length);
+      const segment = 360 / prompts.length;
+      const target = 360 - (pick * segment + segment / 2);
+
+      rotation += 1440 + target - (rotation % 360);
+      wheel.style.transform = 'rotate(' + rotation + 'deg)';
+
+      setTimeout(() => {
+        title.textContent = prompts[pick][0];
+        prompt.textContent = prompts[pick][1];
+        spin.disabled = false;
+        turn++;
+        round.textContent = 'Our moment ' + turn;
+        celebrate();
+      }, 4250);
+    });
+  </script>
+</body>
+</html>

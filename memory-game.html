@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Memory Match</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box} body{min-height:100vh;margin:0;display:grid;place-items:center;font-family:Fredoka,system-ui,sans-serif;color:#70436f;background:radial-gradient(circle at 15% 12%,#fff 0 8%,transparent 26%),linear-gradient(135deg,#f9e8ff,#e7f7ff 55%,#fff0d9);padding:20px}
+    .card{width:min(94vw,650px);position:relative;text-align:center;padding:50px 28px 25px;border-radius:32px;background:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.85);box-shadow:0 22px 65px rgba(104,62,130,.18);backdrop-filter:blur(12px)}
+    
+    /* Fixed Back Button Styles */
+    .back-btn {position:absolute;top:18px;left:20px;text-decoration:none;color:#8a62d9;font-weight:700;font-size:.92rem;z-index: 10;}
+    
+    h1{margin:24px 0 4px;font-size:clamp(2rem,6vw,3rem);color:#fa5da8;text-shadow:0 3px 0 #fff}.intro{margin:0 0 14px}.progress{display:inline-block;padding:7px 17px;border-radius:999px;background:#fff8fd;color:#9a5792;font-weight:600;margin-bottom:16px}.board{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;max-width:480px;margin:auto;perspective:800px}.tile{aspect-ratio:1;cursor:pointer;border:0;background:transparent;padding:0;perspective:600px}.tile:focus-visible .face{outline:3px solid #7d61d7;outline-offset:3px}.face{width:100%;height:100%;display:grid;place-items:center;border-radius:18px;position:relative;transform-style:preserve-3d;transition:transform .45s cubic-bezier(.2,.8,.2,1)}.tile.open .face,.tile.matched .face{transform:rotateY(180deg)}
+    
+    /* Renamed Card Face Classes */
+    .card-front,.card-back{position:absolute;inset:0;display:grid;place-items:center;border-radius:inherit;backface-visibility:hidden}
+    .card-front{font-size:1.7rem;color:#fff;background:linear-gradient(135deg,#ff81bd,#a983e5);box-shadow:0 7px 14px rgba(168,97,170,.22)}
+    .card-back{font-size:clamp(1.8rem,7vw,2.8rem);background:#fff;box-shadow:inset 0 0 0 2px #f8d5e9,0 7px 14px rgba(168,97,170,.12);transform:rotateY(180deg)}
+    .tile.matched .card-back{background:linear-gradient(135deg,#fff9cf,#fff);box-shadow:inset 0 0 0 3px #ffd76a,0 0 17px #ffe99c}
+    
+    .new{border:0;border-radius:999px;margin-top:20px;padding:11px 23px;font:700 1rem Fredoka,sans-serif;cursor:pointer;color:#fff;background:linear-gradient(100deg,#ff63ab,#9b75dd);box-shadow:0 7px 18px rgba(175,91,156,.25);transition:.2s}.new:hover{transform:translateY(-3px)}.win{position:absolute;inset:0;display:none;place-content:center;padding:30px;border-radius:32px;background:rgba(255,255,255,.83);backdrop-filter:blur(5px);z-index:2}.win.show{display:grid}.win h2{font-size:2.4rem;margin:0;color:#f65aa6}.win p{font-size:1.1rem;margin:10px 0 17px}.spark{position:fixed;pointer-events:none;font-size:1.5rem;animation:rise .9s ease-out forwards}@keyframes rise{to{transform:translate(var(--x),-90px) rotate(120deg);opacity:0}}@media(max-width:440px){.card{padding:40px 16px 23px}.board{gap:8px}.card-front{font-size:1.4rem}.card-back{border-radius:14px}.card-front{border-radius:14px}}
+  </style>
+  <link rel="stylesheet" href="mobile-webview.css">
+</head>
+<body><main class="card"><a class="back-btn" href="games.html">&larr; Back to Game</a><h1>Memory Match 🌸</h1><p class="intro">Find all the matching little treasures.</p><div class="progress" id="progress">0 / 8 pairs found</div><section class="board" id="board" aria-label="Memory matching cards"></section><button class="new" id="newGame">Shuffle again ✨</button><div class="win" id="win"><h2>Perfect Match! 💖</h2><p>You found every little piece of joy.</p><button class="new" id="playAgain">Play again</button></div></main>
+<script>
+const board=document.getElementById('board'),progress=document.getElementById('progress'),win=document.getElementById('win');const icons=['🌸','🌹','💖','🍬','🌟','🥰','🎂','🎶'];let first=null,second=null,locked=false,matches=0;
+function shuffle(a){return a.sort(()=>Math.random()-.5)}function burst(){for(let i=0;i<18;i++){const s=document.createElement('i');s.className='spark';s.innerHTML=['✨','💖','🌟'][i%3];s.style.left=(30+Math.random()*40)+'vw';s.style.top=(45+Math.random()*15)+'vh';s.style.setProperty('--x',(Math.random()*150-75)+'px');document.body.append(s);setTimeout(()=>s.remove(),950)}}
+function start(){first=second=null;locked=false;matches=0;progress.textContent='0 / 8 pairs found';win.classList.remove('show');board.replaceChildren();shuffle([...icons,...icons]).forEach((icon,index)=>{const tile=document.createElement('button');tile.className='tile';tile.setAttribute('aria-label','Memory card '+(index+1));
+  /* Updated JavaScript to use the new card-front and card-back classes */
+  tile.innerHTML='<span class="face"><span class="card-front">?</span><span class="card-back">'+icon+'</span></span>';tile.dataset.icon=icon;tile.addEventListener('click',()=>flip(tile));board.append(tile)})}
+function flip(tile){if(locked||tile===first||tile.classList.contains('matched'))return;tile.classList.add('open');if(!first){first=tile;return}second=tile;locked=true;if(first.dataset.icon===second.dataset.icon){setTimeout(()=>{first.classList.replace('open','matched');second.classList.replace('open','matched');matches++;progress.textContent=matches+' / 8 pairs found';burst();first=second=null;locked=false;if(matches===8)setTimeout(()=>win.classList.add('show'),450)},380)}else{setTimeout(()=>{first.classList.remove('open');second.classList.remove('open');first=second=null;locked=false},650)}}
+document.getElementById('newGame').addEventListener('click',start);document.getElementById('playAgain').addEventListener('click',start);start();
+</script></body></html>

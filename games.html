@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Little Games</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@400;500;600;700&display=swap');
+
+        * { box-sizing: border-box; }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            padding: 5rem 1.5rem 3rem;
+            font-family: 'Quicksand', sans-serif;
+            color: #5c4561;
+            background: linear-gradient(135deg, rgba(255, 215, 235, 0.92), rgba(231, 220, 255, 0.92)), url('background-movable.gif') center / cover fixed;
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 2;
+            padding: 11px 20px;
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.75);
+            color: #d84b9a;
+            text-decoration: none;
+            font-weight: 700;
+            box-shadow: 0 5px 18px rgba(136, 74, 139, 0.2);
+            transition: transform 0.25s ease;
+        }
+
+        .back-btn:hover { transform: translateY(-3px); }
+
+        header { text-align: center; margin-bottom: 2.5rem; }
+        h1 {
+            margin: 0;
+            font-family: 'Dancing Script', cursive;
+            font-size: clamp(3rem, 8vw, 5.5rem);
+            color: #ec5ca9;
+            text-shadow: 2px 3px 0 rgba(255,255,255,0.6);
+        }
+
+        header p { margin: 0.75rem auto 0; font-size: 1.1rem; max-width: 520px; }
+
+        .games-grid {
+            max-width: 1050px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.4rem;
+        }
+
+        .game-card {
+            display: flex;
+            flex-direction: column;
+            min-height: 230px;
+            padding: 1.7rem;
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.68);
+            text-decoration: none;
+            color: inherit;
+            box-shadow: 0 9px 25px rgba(132, 76, 137, 0.14);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .game-card:hover { transform: translateY(-8px) rotate(-1deg); box-shadow: 0 16px 32px rgba(132, 76, 137, 0.23); }
+        .game-icon { font-size: 3.25rem; }
+        .game-card h2 { margin: 1rem 0 0.55rem; color: #c94e9a; font-size: 1.35rem; }
+        .game-card p { margin: 0; line-height: 1.5; }
+        .play-label { margin-top: auto; padding-top: 1.3rem; color: #7d3bb2; font-weight: 700; }
+
+        @media (max-width: 600px) {
+            body { padding-top: 5.5rem; }
+            .back-btn { top: 14px; left: 14px; }
+        }
+    </style>
+    <link rel="stylesheet" href="mobile-webview.css">
+</head>
+<body>
+    <a class="back-btn" href="cake-advanced.html">&#8592;</a>
+
+    <header>
+        <h1>Our Little Games</h1>
+        <p>Pick a tiny adventure and let the birthday fun begin!</p>
+    </header>
+
+    <main class="games-grid">
+        <a class="game-card" href="game.html">
+            <span class="game-icon">&#128150;</span>
+            <h2>Play a Cute Game</h2>
+            <p>A sweet little game made just for a smile.</p>
+            <span class="play-label">Play now &#8594;</span>
+        </a>
+        <a class="game-card" href="memory-game.html">
+            <span class="game-icon">&#127800;</span>
+            <h2>Memory Match</h2>
+            <p>Find the matching pairs and test your memory.</p>
+            <span class="play-label">Play now &#8594;</span>
+        </a>
+        <a class="game-card" href="party-wheel.html">
+            <span class="game-icon">&#128150;</span>
+            <h2>Spin Our Little Wheel</h2>
+            <p>Give the wheel a spin for a fun surprise.</p>
+            <span class="play-label">Play now &#8594;</span>
+        </a>
+        <a class="game-card" href="secret-note-game.html">
+            <span class="game-icon">&#128140;</span>
+            <h2>Unlock a Secret Note</h2>
+            <p>Play to discover a special hidden message.</p>
+            <span class="play-label">Play now &#8594;</span>
+        </a>
+    </main>
+</body>
+</html>
