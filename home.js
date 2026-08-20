@@ -31,9 +31,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const passwordError = document.getElementById('password-error');
     const birthdayContent = document.getElementById('birthday-content');
     const cursor = document.querySelector('.cursor');
-    const bgMusic = document.getElementById('bgMusic');
-    const musicToggle = document.getElementById('musicToggle');
-    const musicIcon = musicToggle ? musicToggle.querySelector('.music-icon') : null;
+    const bgMusic = null;
+    const musicToggle = null;
+    const musicIcon = null;
 
     // ===== STATE =====
     let birthdayAnimationsStarted = false;

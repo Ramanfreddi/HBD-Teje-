@@ -752,23 +752,21 @@
         </div>
     </div>
 
-    <!-- Audio Control Pill -->
-    <div class="audio-pill">
-        <button class="audio-btn" id="music-toggle" onclick="toggleAudio()">▶️</button>
-        <span class="audio-label">Birthday Beats 🎵</span>
-    </div>
-
     <!-- Audio -->
-    <audio id="bg-music" loop>
+    <audio id="bg-music" loop autoplay>
         <source src="hbd.mp3" type="audio/mpeg">
     </audio>
 
     <script>
         let candlesLit = true;
         let allCandlesBlown = false;
-        let isMusicPlaying = false;
         const bgMusic = document.getElementById('bg-music');
-        const musicToggleBtn = document.getElementById('music-toggle');
+
+        function startBirthdayMusic() {
+            bgMusic.play().catch(() => {});
+        }
+        window.addEventListener('load', startBirthdayMusic);
+        document.addEventListener('pointerdown', startBirthdayMusic, { once: true });
 
         // Create Ambient Floating Particles
         function createAmbientParticles() {
@@ -789,27 +787,12 @@
         }
         createAmbientParticles();
 
-        // Audio Controls
-        function toggleAudio() {
-            if (isMusicPlaying) {
-                bgMusic.pause();
-                musicToggleBtn.innerText = '▶️';
-            } else {
-                bgMusic.play().catch(e => console.log("Audio playback requires user interaction."));
-                musicToggleBtn.innerText = '⏸️';
-            }
-            isMusicPlaying = !isMusicPlaying;
-        }
-
         // Blow Out Candles
         function blowOutCandles() {
             if (!candlesLit) return;
             candlesLit = false;
             
-            // Start audio if it isn't playing yet
-            if (!isMusicPlaying) {
-                toggleAudio();
-            }
+            startBirthdayMusic();
 
             const candles = document.querySelectorAll('.candle');
             candles.forEach((candle, index) => {

@@ -3,6 +3,7 @@ const bgMusic = document.getElementById('bgMusic');
 const musicToggle = document.getElementById('musicToggle');
 const musicIcon = musicToggle.querySelector('.music-icon');
 
+if (bgMusic) {
 function toggleMusic() {
     if (bgMusic.paused) {
         bgMusic.play();
@@ -26,6 +27,7 @@ if (localStorage.getItem('musicPlaying') === 'true') {
     }).catch(() => {
         musicIcon.textContent = '🔇';
     });
+}
 }
 
 const reasons = [

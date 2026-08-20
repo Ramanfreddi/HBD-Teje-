@@ -339,10 +339,7 @@
 </head>
 
 <body>
-    <audio id="bgMusic" loop preload="auto">
-        <source src="hbd.mp3" type="audio/mpeg">
-    </audio>
-    <div class="music-toggle" id="musicToggle" title="Toggle Music">
+    <div class="music-toggle" id="musicToggle" title="Toggle Music" hidden>
         <span class="music-icon">🎵</span>
     </div>
     <a href="timeline.html" class="back-btn" title="Go Back">←</a>
@@ -401,6 +398,7 @@
         const musicToggle = document.getElementById('musicToggle');
         const musicIcon = musicToggle.querySelector('.music-icon');
 
+        if (bgMusic) {
         function toggleMusic() {
             if (bgMusic.paused) {
                 bgMusic.play();
@@ -424,6 +422,7 @@
             }).catch(() => {
                 musicIcon.textContent = '🔇';
             });
+        }
         }
 
         // Confetti Animation

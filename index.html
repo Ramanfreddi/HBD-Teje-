@@ -14,8 +14,6 @@
     <link rel="preload" as="image" href="photo-3.jpg">
     <link rel="preload" as="image" href="gif1.gif">
     <link rel="preload" as="image" href="gif2.gif">
-    <!-- Preload Audio -->
-    <link rel="preload" as="audio" href="hbd.mp3">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <link rel="stylesheet" href="home.css">
     <link rel="stylesheet" href="mobile-webview.css">
@@ -30,10 +28,7 @@
         <div class="loading-text">Loading magic...</div>
     </div>
 
-    <audio id="bgMusic" loop>
-        <source src="hbd.mp3" type="audio/mpeg">
-    </audio>
-    <div class="music-toggle" id="musicToggle" title="Toggle Music">
+    <div class="music-toggle" id="musicToggle" title="Toggle Music" hidden>
         <span class="music-icon">🎵</span>
     </div>
     <div class="cursor"></div>
