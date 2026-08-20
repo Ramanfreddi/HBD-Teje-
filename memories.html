@@ -3,10 +3,8 @@
 <head>
     <meta name="color-scheme" content="only light">
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- CUSTOMIZE: Change the title -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Our Memories ✨</title>
-    <!-- CUSTOMIZE: Change favicon -->
     <link rel="icon" type="image/png" href="favicon.png">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@300;400;500;600&display=swap');
@@ -17,8 +15,17 @@
             box-sizing: border-box;
         }
 
-        body {
+        /* Allow smooth scrolling on mobile webviews */
+        html, body {
+            width: 100%;
             min-height: 100vh;
+            overflow-x: hidden !important;
+            overflow-y: auto !important;
+            -webkit-overflow-scrolling: touch !important;
+            touch-action: pan-y !important;
+        }
+
+        body {
             background: linear-gradient(135deg,
                     rgba(255, 209, 220, 0.85) 0%,
                     rgba(230, 230, 250, 0.85) 25%,
@@ -31,7 +38,6 @@
             background-attachment: fixed;
             animation: gradientFlow 15s ease infinite;
             font-family: 'Quicksand', sans-serif;
-            overflow-x: hidden;
             color: #4a4a4a;
         }
 
@@ -74,7 +80,6 @@
         .welcome h1 {
             font-family: 'Dancing Script', cursive;
             font-size: 4rem;
-            /* CUSTOMIZE: Change primary color */
             color: #ff69b4;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
             animation: fadeInScale 2s ease;
@@ -94,7 +99,7 @@
             margin: 0 auto;
             padding: 2rem;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 2rem;
             z-index: 3;
             position: relative;
@@ -108,6 +113,7 @@
             transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
+            touch-action: pan-y !important;
         }
 
         .memory-card:hover {
@@ -115,29 +121,18 @@
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
         }
 
-        .memory-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-            transform: translateX(-100%);
-            transition: 0.5s;
-        }
-
-        .memory-card:hover::before {
-            transform: translateX(100%);
-        }
-
+        /* Image sizing fix for Mobile WebViews */
         .memory-img {
             width: 100%;
+            max-width: 100%;
             height: 250px;
+            min-height: 200px;
             object-fit: cover;
+            display: block;
             border-radius: 15px;
             margin-bottom: 1rem;
             transition: transform 0.5s ease;
+            background-color: #ffe6f2; /* Color preview while loading */
         }
 
         .memory-card:hover .memory-img {
@@ -146,7 +141,6 @@
 
         .memory-date {
             font-family: 'Dancing Script', cursive;
-            /* CUSTOMIZE: Change date color */
             color: #ff69b4;
             font-size: 1.3rem;
             margin-bottom: 0.5rem;
@@ -172,7 +166,6 @@
         .final-message h2 {
             font-family: 'Dancing Script', cursive;
             font-size: 3rem;
-            /* CUSTOMIZE: Change color */
             color: #ff69b4;
             margin-bottom: 2rem;
             animation: heartbeat 2s infinite;
@@ -194,7 +187,6 @@
             display: inline-block;
             padding: 1rem 2rem;
             font-size: 1.2rem;
-            /* CUSTOMIZE: Change button gradient */
             background: linear-gradient(45deg, #ff69b4, #da70d6);
             color: white;
             border: none;
@@ -204,6 +196,7 @@
             transition: all 0.3s ease;
             box-shadow: 0 5px 15px rgba(255, 105, 180, 0.4);
             animation: float 3s infinite ease-in-out;
+            touch-action: manipulation;
         }
 
         .goodbye-btn:hover {
@@ -214,7 +207,6 @@
         .signature {
             font-style: italic;
             font-size: 1.3rem;
-            /* CUSTOMIZE: Change signature color */
             color: #ff69b4;
             margin-top: 1rem;
         }
@@ -244,53 +236,24 @@
         }
 
         ::-webkit-scrollbar-thumb {
-            /* CUSTOMIZE: Change scrollbar gradient */
             background: linear-gradient(45deg, #ff69b4, #da70d6);
             border-radius: 6px;
-        }
-
-        /* Quick navigation links */
-        .wishes-nav-btn {
-            position: fixed;
-            bottom: 110px;
-            right: 30px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 12px 24px;
-            border: 2px solid rgba(255, 255, 255, 0.6);
-            border-radius: 50px;
-            background: linear-gradient(135deg, #ff69b4, #8a2be2);
-            color: #fff;
-            font-weight: 700;
-            font-size: 1.05rem;
-            text-decoration: none;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-            z-index: 50;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .wishes-nav-btn:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(255, 105, 180, 0.4);
         }
 
         /* Responsive Design */
         @media (max-width: 768px) {
             .welcome h1 { font-size: 3rem; }
-            .memory-container { grid-template-columns: 1fr; }
+            .memory-container { grid-template-columns: 1fr; padding: 1rem; }
             .final-message h2 { font-size: 2.5rem; }
-            .wishes-nav-btn { right: 15px; padding: 10px 18px; font-size: 0.9rem; }
         }
 
         /* Music Toggle Button */
         .music-toggle {
             position: fixed;
-            top: 20px;
-            right: 20px;
+            top: max(20px, env(safe-area-inset-top));
+            right: max(20px, env(safe-area-inset-right));
             width: 50px;
             height: 50px;
-            /* CUSTOMIZE: Change music button gradient */
             background: linear-gradient(45deg, #ff69b4, #ff99cc);
             border-radius: 50%;
             display: flex;
@@ -300,6 +263,7 @@
             z-index: 1000;
             box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4);
             transition: transform 0.3s, box-shadow 0.3s;
+            touch-action: manipulation;
         }
 
         .music-toggle:hover {
@@ -323,11 +287,10 @@
         /* Back Button */
         .back-btn {
             position: fixed;
-            top: 20px;
-            left: 20px;
+            top: max(20px, env(safe-area-inset-top));
+            left: max(20px, env(safe-area-inset-left));
             width: 50px;
             height: 50px;
-            /* CUSTOMIZE: Change back button gradient */
             background: linear-gradient(45deg, #ff69b4, #ff99cc);
             border-radius: 50%;
             display: flex;
@@ -341,6 +304,7 @@
             color: white;
             font-size: 1.5rem;
             font-weight: bold;
+            touch-action: manipulation;
         }
 
         .back-btn:hover {
@@ -353,10 +317,9 @@
             display: inline-block;
             padding: 1rem 2rem;
             font-size: 1.1rem;
-            /* CUSTOMIZE: Change share button gradient */
             background: linear-gradient(45deg, #da70d6, #9370db);
             color: white;
-            text-decoration: none; /* REMOVES THE UNDERLINE */
+            text-decoration: none;
             border: none;
             border-radius: 50px;
             cursor: pointer;
@@ -364,6 +327,7 @@
             transition: all 0.3s ease;
             box-shadow: 0 5px 15px rgba(218, 112, 214, 0.4);
             font-family: 'Quicksand', sans-serif;
+            touch-action: manipulation;
         }
 
         .share-btn:hover {
@@ -375,7 +339,7 @@
 </head>
 
 <body>
-    <audio id="bgMusic" loop>
+    <audio id="bgMusic" loop preload="auto">
         <source src="hbd.mp3" type="audio/mpeg">
     </audio>
     <div class="music-toggle" id="musicToggle" title="Toggle Music">
@@ -392,57 +356,44 @@
     </div>
 
     <section class="welcome">
-        <!-- CUSTOMIZE: Change the title -->
         <h1>Special Moments</h1>
-        <!-- CUSTOMIZE: Change the description -->
         <p>Some moments are just meant to be treasured. Here's to all the laughs, talks, and unforgettable times we've shared...</p>
     </section>
 
     <div class="memory-container">
-        <!-- CUSTOMIZE: Add your photos and captions -->
-        <!-- Copy and paste memory-card blocks for more memories -->
-
         <div class="memory-card">
-            <img src="./photos/photo-1.jpg" alt="Memory 1" class="memory-img">
-            <!-- CUSTOMIZE: Change date/title -->
+            <img src="photos/photo-1.jpg" onerror="this.onerror=null; this.src='photo-1.jpg';" alt="Memory 1" class="memory-img">
             <div class="memory-date">A Special Day</div>
-            <!-- CUSTOMIZE: Change caption -->
             <div class="memory-caption">The best memories are made with the best people. So grateful for every moment we share! 💫</div>
         </div>
 
         <div class="memory-card">
-            <img src="./photos/photo-2.jpg" alt="Memory 2" class="memory-img">
+            <img src="photos/photo-2.jpg" onerror="this.onerror=null; this.src='photo-2.jpg';" alt="Memory 2" class="memory-img">
             <div class="memory-date">Beautiful Moments</div>
             <div class="memory-caption">You radiate positivity wherever you go. Keep shining bright! ✨</div>
         </div>
 
         <div class="memory-card">
-            <img src="./photos/photo-3.jpg" alt="Memory 3" class="memory-img">
+            <img src="photos/photo-3.jpg" onerror="this.onerror=null; this.src='photo-3.jpg';" alt="Memory 3" class="memory-img">
             <div class="memory-date">Birthday Vibes</div>
             <div class="memory-caption">Another year of celebrating you! Here's to making this birthday even more special! 🎂💖</div>
         </div>
     </div>
 
     <section class="final-message">
-        <!-- CUSTOMIZE: Change name and age -->
         <h2>Happy 23rd Birthday, Teje! 🎂</h2>
-        <!-- CUSTOMIZE: Change the message -->
         <p>From our first meeting to becoming inseparable - what a journey! 💫<br>
             Through every moment, every laugh, every memory - you've been amazing.<br>
             Here’s to another year of our beautiful friendship, countless memories,<br>
              And all the happiness you deserve! 🥳💖🎉</p>
         <p>You deserve all the happiness in the world. Keep being YOU! ✨</p>
-        <!-- CUSTOMIZE: Change your name -->
         <p class="signature">- With love, Freddi 💖</p>
-        <a href="#" class="goodbye-btn" onclick="celebrate()">Celebrate! 🎊</a>
+        <a href="#" class="goodbye-btn" onclick="celebrate(event)">Celebrate! 🎊</a>
         <a href="games.html" class="share-btn">Play Our Games 🎮</a>
     </section>
 
     <!-- Confetti Canvas -->
     <canvas id="confetti-canvas" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999;"></canvas>
-
-
-
 
     <script>
         // Music control
@@ -479,7 +430,6 @@
         const canvas = document.getElementById('confetti-canvas');
         const ctx = canvas.getContext('2d');
         let confettiPieces = [];
-        let animationId;
 
         function resizeCanvas() {
             canvas.width = window.innerWidth;
@@ -535,37 +485,17 @@
             });
 
             if (confettiPieces.length > 0) {
-                animationId = requestAnimationFrame(animateConfetti);
+                requestAnimationFrame(animateConfetti);
             }
         }
 
-        function celebrate() {
-            event.preventDefault();
+        function celebrate(e) {
+            if (e) e.preventDefault();
             createConfetti();
             animateConfetti();
 
             setTimeout(() => { createConfetti(); }, 500);
             setTimeout(() => { createConfetti(); }, 1000);
-        }
-
-        // Share function - CUSTOMIZE: Update the share message
-        function shareWebsite() {
-            const shareData = {
-                title: 'Happy Birthday!',
-                text: 'Check out this special birthday wish! 💖',
-                url: window.location.href
-            };
-
-            if (navigator.share) {
-                navigator.share(shareData)
-                    .catch((err) => console.log('Share cancelled'));
-            } else {
-                navigator.clipboard.writeText(window.location.href).then(() => {
-                    alert('Link copied to clipboard! 💖');
-                }).catch(() => {
-                    alert('Share this link: ' + window.location.href);
-                });
-            }
         }
     </script>
 </body>
