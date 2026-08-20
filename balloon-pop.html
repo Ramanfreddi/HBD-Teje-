@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="color-scheme" content="only light">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Birthday Balloon Pop</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root { --pink:#ff5fa5; --purple:#8e6ae0; --ink:#70436f; }
+    * { box-sizing:border-box; }
+    body { min-height:100vh; margin:0; padding:20px; display:grid; place-items:center; overflow:hidden; font-family:Fredoka,system-ui,sans-serif; color:var(--ink); background:linear-gradient(135deg,#fff0f8,#e9f8ff 54%,#fff6dc); }
+    body::before,body::after { content:''; position:fixed; width:38vmax; aspect-ratio:1; border-radius:50%; filter:blur(45px); opacity:.34; pointer-events:none; }
+    body::before { background:#ffc0df; left:-14vmax; top:-16vmax; } body::after { background:#b5ddff; right:-15vmax; bottom:-18vmax; }
+    .card { position:relative; width:min(94vw,700px); min-height:600px; overflow:hidden; padding:25px; text-align:center; border:1px solid rgba(255,255,255,.9); border-radius:32px; background:rgba(255,255,255,.52); box-shadow:0 24px 70px rgba(105,63,132,.18); backdrop-filter:blur(12px); }
+    .back { position:absolute; top:19px; left:21px; z-index:3; text-decoration:none; color:var(--purple); font-size:.93rem; font-weight:700; }
+    h1 { margin:28px 0 4px; font-size:clamp(2rem,6vw,3.2rem); color:var(--pink); text-shadow:0 3px 0 #fff; }
+    .intro { margin:0 0 16px; }
+    .stats { display:flex; justify-content:center; gap:12px; margin-bottom:16px; }
+    .stat { min-width:118px; padding:8px 15px; border-radius:16px; background:rgba(255,255,255,.75); box-shadow:0 5px 13px rgba(108,57,122,.1); }
+    .stat b { display:block; color:var(--pink); font-size:1.35rem; }
+    .playfield { position:relative; height:390px; overflow:hidden; border:2px dashed rgba(201,121,191,.34); border-radius:25px; background:linear-gradient(180deg,rgba(255,255,255,.7),rgba(247,232,255,.5)); }
+    .balloon { position:absolute; width:58px; height:71px; padding:0; border:0; border-radius:50% 50% 48% 48%; cursor:pointer; background:var(--color); box-shadow:inset -9px -11px 0 rgba(0,0,0,.08), inset 8px 8px 0 rgba(255,255,255,.25), 0 7px 10px rgba(103,65,128,.16); animation:float var(--speed) ease-in-out infinite alternate; transition:transform .12s ease,opacity .18s ease; }
+    .balloon::before { content:''; position:absolute; bottom:-9px; left:22px; border-left:7px solid transparent; border-right:7px solid transparent; border-top:12px solid var(--color); filter:brightness(.92); }
+    .balloon::after { content:''; position:absolute; width:1px; height:44px; left:28px; top:70px; background:rgba(112,67,111,.55); transform:rotate(8deg); transform-origin:top; }
+    .balloon:hover { transform:scale(1.1); } .balloon.pop { transform:scale(1.65); opacity:0; pointer-events:none; }
+    .burst { position:absolute; z-index:2; font-size:1.6rem; pointer-events:none; animation:burst .55s ease-out forwards; }
+    @keyframes float { to { margin-top:-14px; } } @keyframes burst { to { transform:translate(var(--x),var(--y)) rotate(120deg); opacity:0; } }
+    .restart { margin-top:17px; border:0; border-radius:999px; padding:11px 23px; cursor:pointer; font:700 1rem Fredoka,sans-serif; color:#fff; background:linear-gradient(100deg,var(--pink),var(--purple)); box-shadow:0 7px 18px rgba(175,91,156,.25); transition:transform .2s; }
+    .restart:hover { transform:translateY(-3px); }
+    .message { position:absolute; inset:0; z-index:4; display:none; place-content:center; padding:30px; background:rgba(255,255,255,.84); backdrop-filter:blur(5px); }
+    .message.show { display:grid; } .message h2 { margin:0; color:var(--pink); font-size:clamp(2rem,6vw,3rem); } .message p { margin:10px 0 16px; font-size:1.1rem; }
+    @media (max-width:480px) { .card { min-height:570px; padding:19px 14px; } .playfield { height:360px; } h1 { margin-top:35px; } .balloon { transform:scale(.86); } }
+  </style>
+  <link rel="stylesheet" href="mobile-webview.css">
+</head>
+<body>
+  <main class="card">
+    <a class="back" href="games.html">&larr; Back to games</a>
+    <h1>Balloon Pop 🎈</h1>
+    <p class="intro">Pop every birthday balloon before the clock reaches zero!</p>
+    <div class="stats"><div class="stat">Popped <b id="score">0</b></div><div class="stat">Time <b id="time">30</b></div></div>
+    <section class="playfield" id="playfield" aria-label="Balloon popping game"></section>
+    <button class="restart" id="restart">Start again ✨</button>
+    <div class="message" id="message"><div><h2 id="result">Yay! 🎉</h2><p id="resultText"></p><button class="restart" id="playAgain">Play again</button></div></div>
+  </main>
+  <script>
+    const field=document.getElementById('playfield'),scoreEl=document.getElementById('score'),timeEl=document.getElementById('time'),message=document.getElementById('message'),result=document.getElementById('result'),resultText=document.getElementById('resultText');
+    const colors=['#ff6da8','#8f72e5','#5ec8e9','#ffae5f','#79c996','#f282c2']; let score=0,time=30,timer,spawnTimer,running=false;
+    function popBurst(x,y){for(let i=0;i<7;i++){const bit=document.createElement('span');bit.className='burst';bit.textContent=['✨','💖','⭐'][i%3];bit.style.left=x+'px';bit.style.top=y+'px';bit.style.setProperty('--x',(Math.random()*100-50)+'px');bit.style.setProperty('--y',(Math.random()*100-50)+'px');field.append(bit);setTimeout(()=>bit.remove(),600)}}
+    function addBalloon(){if(!running)return;const balloon=document.createElement('button');balloon.className='balloon';balloon.setAttribute('aria-label','Pop a balloon');balloon.style.setProperty('--color',colors[Math.floor(Math.random()*colors.length)]);balloon.style.setProperty('--speed',(1.1+Math.random()*1.2)+'s');balloon.style.left=(Math.random()*(field.clientWidth-64)+3)+'px';balloon.style.top=(Math.random()*(field.clientHeight-100)+12)+'px';balloon.onclick=()=>{if(!running||balloon.classList.contains('pop'))return;score++;scoreEl.textContent=score;const rect=balloon.getBoundingClientRect(),area=field.getBoundingClientRect();popBurst(rect.left-area.left+29,rect.top-area.top+34);balloon.classList.add('pop');setTimeout(()=>balloon.remove(),180)};field.append(balloon);setTimeout(()=>balloon.remove(),2600)}
+    function finish(){running=false;clearInterval(timer);clearInterval(spawnTimer);result.textContent=score>=18?'Balloon superstar! 🎉':'Birthday fun! 💖';resultText.textContent='You popped '+score+' balloon'+(score===1?'':'s')+' in 30 seconds.';message.classList.add('show')}
+    function start(){clearInterval(timer);clearInterval(spawnTimer);field.replaceChildren();score=0;time=30;running=true;scoreEl.textContent=score;timeEl.textContent=time;message.classList.remove('show');for(let i=0;i<5;i++)setTimeout(addBalloon,i*180);spawnTimer=setInterval(addBalloon,620);timer=setInterval(()=>{time--;timeEl.textContent=time;if(time===0)finish()},1000)}
+    document.getElementById('restart').addEventListener('click',start);document.getElementById('playAgain').addEventListener('click',start);start();
+  </script>
+</body>
+</html>
