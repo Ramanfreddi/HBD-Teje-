@@ -33,4 +33,4 @@ function start(){first=second=null;locked=false;matches=0;progress.textContent='
   tile.innerHTML='<span class="face"><span class="card-front">?</span><span class="card-back">'+icon+'</span></span>';tile.dataset.icon=icon;tile.addEventListener('click',()=>flip(tile));board.append(tile)})}
 function flip(tile){if(locked||tile===first||tile.classList.contains('matched'))return;tile.classList.add('open');if(!first){first=tile;return}second=tile;locked=true;if(first.dataset.icon===second.dataset.icon){setTimeout(()=>{first.classList.replace('open','matched');second.classList.replace('open','matched');matches++;progress.textContent=matches+' / 8 pairs found';burst();first=second=null;locked=false;if(matches===8)setTimeout(()=>win.classList.add('show'),450)},380)}else{setTimeout(()=>{first.classList.remove('open');second.classList.remove('open');first=second=null;locked=false},650)}}
 document.getElementById('newGame').addEventListener('click',start);document.getElementById('playAgain').addEventListener('click',start);start();
-</script></body></html>
+</script><script type="module" src="auth-guard.js"></script></body></html>

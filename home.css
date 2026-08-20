@@ -372,3 +372,34 @@ h1 {
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
 }
+body.auth-pending > * { visibility: hidden; }
+
+.auth-account {
+    position: fixed;
+    top: 18px;
+    right: 18px;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    max-width: min(86vw, 360px);
+    padding: 8px 9px 8px 14px;
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    border-radius: 999px;
+    color: #6f4b72;
+    background: rgba(255, 255, 255, 0.76);
+    box-shadow: 0 6px 20px rgba(112, 63, 125, 0.16);
+    font: 700 0.78rem 'Poppins', sans-serif;
+}
+
+.auth-account span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.auth-account button {
+    border: 0;
+    border-radius: 999px;
+    padding: 7px 11px;
+    cursor: pointer;
+    color: #fff;
+    background: linear-gradient(100deg, #f56da9, #9874db);
+    font: inherit;
+}
