@@ -4,13 +4,15 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Bubblegum+Sans&family=Comic+Neue:wght@700&family=Quicksand:wght@500&display=swap');
 
-/* Prevent horizontal scroll while enabling vertical touch scroll on mobile */
+/* Force single-finger vertical touch scrolling and prevent webview locks */
 html, body {
-    width: 100%;
-    max-width: 100%;
-    overflow-x: hidden;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: 100vh;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    touch-action: pan-y !important;
 }
 
 * {
@@ -21,7 +23,6 @@ html, body {
 }
 
 body {
-    min-height: 100vh;
     background: linear-gradient(135deg,
                     rgba(255, 209, 220, 0.85) 0%,
                     rgba(230, 230, 250, 0.85) 25%,
@@ -37,11 +38,18 @@ body {
     color: #4a4a4a;
 }
 
+/* Ensure background/decorations NEVER block single-finger touch drag */
+.custom-cursor, 
+.floating, 
+.gif-overlay {
+    pointer-events: none !important;
+    touch-action: none !important;
+}
+
 .custom-cursor {
     width: 30px;
     height: 30px;
     position: fixed;
-    pointer-events: none;
     z-index: 9999;
     mix-blend-mode: difference;
     transition: transform 0.1s;
@@ -60,9 +68,10 @@ body {
     position: relative;
     z-index: 1;
     padding-top: calc(env(safe-area-inset-top) + 75px);
-    padding-bottom: 1rem;
+    padding-bottom: 2rem;
     padding-left: 1rem;
     padding-right: 1rem;
+    touch-action: pan-y !important;
 }
 
 h1 {
@@ -85,6 +94,7 @@ h1 {
     cursor: pointer;
     position: relative;
     overflow: hidden;
+    touch-action: pan-y !important;
 }
 
 .reason-card:hover {
@@ -133,6 +143,7 @@ h1 {
     transition: all 0.3s;
     font-family: 'Comic Neue', cursive;
     box-shadow: 0 5px 15px rgba(255, 105, 180, 0.3);
+    touch-action: auto !important;
 }
 
 .shuffle-button.story-mode {
@@ -184,7 +195,6 @@ h1 {
 
 .floating {
     position: fixed;
-    pointer-events: none; /* Crucial to prevent blocking touch drag on mobile */
     animation: float 3s ease-in-out infinite;
 }
 
@@ -219,6 +229,7 @@ h1 {
     z-index: 1000;
     box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4);
     transition: transform 0.3s, box-shadow 0.3s;
+    touch-action: auto !important;
 }
 
 .music-toggle:hover {
@@ -253,6 +264,7 @@ h1 {
     color: white;
     font-size: 1.5rem;
     font-weight: bold;
+    touch-action: auto !important;
 }
 
 .back-btn:hover {
@@ -268,7 +280,7 @@ h1 {
 @media (max-width: 768px) {
     .container {
         padding-top: calc(env(safe-area-inset-top) + 80px);
-        padding-bottom: 0.5rem;
+        padding-bottom: 1rem;
     }
     h1 { 
         font-size: 2rem; 

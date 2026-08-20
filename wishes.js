@@ -157,13 +157,16 @@ function createFloatingElement() {
     });
 }
 
+// Custom Cursor (Only active on desktop mouse devices)
 const cursor = document.querySelector('.custom-cursor');
-document.addEventListener('mousemove', (e) => {
-    gsap.to(cursor, {
-        x: e.clientX - 15,
-        y: e.clientY - 15,
-        duration: 0.2
+if (cursor && window.matchMedia('(pointer: fine)').matches) {
+    document.addEventListener('mousemove', (e) => {
+        gsap.to(cursor, {
+            x: e.clientX - 15,
+            y: e.clientY - 15,
+            duration: 0.2
+        });
     });
-});
+}
 
 setInterval(createFloatingElement, 2000);
