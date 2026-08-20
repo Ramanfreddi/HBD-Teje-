@@ -1,5 +1,6 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js';
 import { getAuth } from 'https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js';
+import { getAnalytics, isSupported } from 'https://www.gstatic.com/firebasejs/12.18.0/firebase-analytics.js';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyAvaRLGWXB_-IeFDzhqmlHhUGMimPYDfi4',
@@ -13,3 +14,9 @@ const firebaseConfig = {
 
 export const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
+
+// Analytics is unavailable in some contexts (for example, private browsing).
+// Keep authentication working even when Analytics is not supported.
+export const analytics = isSupported()
+  .then((supported) => supported ? getAnalytics(app) : null)
+  .catch(() => null);
