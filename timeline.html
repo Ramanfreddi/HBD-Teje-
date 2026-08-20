@@ -1,13 +1,342 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta name="color-scheme" content="only light">
     <meta charset="UTF-8">
+    <!-- FIX 1: Added viewport-fit=cover to support iPhone safe areas -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Birthday Wishes 💖</title>
+    <!-- CUSTOMIZE: Change the title -->
+    <title>Our Journey 💫</title>
+    <!-- CUSTOMIZE: Change favicon -->
     <link rel="icon" type="image/png" href="favicon.png">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <link rel="stylesheet" href="./wishes.css">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg,
+                    rgba(255, 209, 220, 0.85) 0%,
+                    rgba(230, 230, 250, 0.85) 25%,
+                    rgba(255, 239, 213, 0.85) 50%,
+                    rgba(230, 230, 250, 0.85) 75%,
+                    rgba(255, 209, 220, 0.85) 100%),
+                    url('background-movable.gif');
+            background-size: 400% 400%, cover;
+            background-position: center, center;
+            background-attachment: fixed;
+            animation: gradientFlow 15s ease infinite;
+            font-family: 'Quicksand', sans-serif;
+            overflow-x: hidden;
+            color: #4a4a4a;
+        }
+
+        /* FIX 2: Added safe-area-inset-top padding so notch doesn't cover title */
+        .page-title {
+            text-align: center;
+            color: #c22ab6;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            padding-top: calc(env(safe-area-inset-top) + 80px);
+        }
+
+        .page-subtitle {
+            text-align: center;
+            color: rgba(16, 1, 2, 0.877);
+            font-size: 1.2rem;
+            margin-bottom: 3rem;
+        }
+
+        .timeline {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 100%;
+            background: rgba(255,255,255,0.3);
+            border-radius: 2px;
+        }
+
+        .timeline-item {
+            display: flex;
+            justify-content: flex-end;
+            padding-right: 50%;
+            position: relative;
+            margin-bottom: 3rem;
+            opacity: 0;
+            transform: translateX(-50px);
+        }
+
+        .timeline-item:nth-child(even) {
+            justify-content: flex-start;
+            padding-right: 0;
+            padding-left: 50%;
+            transform: translateX(50px);
+        }
+
+        .timeline-item.visible {
+            opacity: 1;
+            transform: translateX(0);
+            transition: all 0.6s ease;
+        }
+
+        .timeline-content {
+            background: rgba(255,255,255,0.95);
+            padding: 1.5rem;
+            border-radius: 15px;
+            max-width: 350px;
+            margin: 0 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            position: relative;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #ffd700;
+            border-radius: 50%;
+            top: 50%;
+            transform: translateY(-50%);
+            box-shadow: 0 0 20px rgba(255,215,0,0.5);
+        }
+
+        .timeline-item:nth-child(odd) .timeline-dot {
+            right: calc(50% - 10px);
+        }
+
+        .timeline-item:nth-child(even) .timeline-dot {
+            left: calc(50% - 10px);
+        }
+
+        .timeline-date {
+            font-size: 0.9rem;
+            /* CUSTOMIZE: Change date color */
+            color: #764ba2;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-title {
+            font-size: 1.2rem;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-desc {
+            font-size: 1rem;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .timeline-emoji {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Friendship Receipt */
+        .receipt-container {
+            max-width: 400px;
+            margin: 3rem auto;
+            background: #fffef5;
+            padding: 2rem;
+            border-radius: 5px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            font-family: 'Courier New', monospace;
+            position: relative;
+        }
+
+        .receipt-container::before,
+        .receipt-container::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 20px;
+            background: linear-gradient(45deg, transparent 33.33%, #fffef5 33.33%, #fffef5 66.66%, transparent 66.66%),
+                        linear-gradient(-45deg, transparent 33.33%, #fffef5 33.33%, #fffef5 66.66%, transparent 66.66%);
+            background-size: 20px 40px;
+        }
+
+        .receipt-container::before {
+            top: -10px;
+        }
+
+        .receipt-container::after {
+            bottom: -10px;
+            transform: rotate(180deg);
+        }
+
+        .receipt-header {
+            text-align: center;
+            border-bottom: 2px dashed #333;
+            padding-bottom: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .receipt-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .receipt-subtitle {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .receipt-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px dotted #ccc;
+        }
+
+        .receipt-label {
+            color: #333;
+        }
+
+        .receipt-value {
+            /* CUSTOMIZE: Change value color */
+            color: #764ba2;
+            font-weight: bold;
+        }
+
+        .receipt-total {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 2px dashed #333;
+            text-align: center;
+            font-size: 1.2rem;
+        }
+
+        .receipt-footer {
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        .next-btn {
+            display: block;
+            margin: 3rem auto;
+            padding: 1rem 2.5rem;
+            font-size: 1.2rem;
+            background: linear-gradient(45deg, #ffd700, #ffed4a);
+            border: none;
+            border-radius: 50px;
+            color: #333;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(255,215,0,0.4);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .next-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255,215,0,0.6);
+        }
+
+        /* FIX 3: Safe area top offset for Music Toggle */
+        .music-toggle {
+            position: fixed;
+            top: calc(env(safe-area-inset-top) + 15px);
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(45deg, #ffd700, #ffed4a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+            transition: transform 0.3s;
+        }
+
+        .music-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        .music-toggle.playing {
+            animation: pulse 1s ease-in-out infinite;
+        }
+
+        .music-icon {
+            font-size: 1.5rem;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* FIX 4: Safe area top offset for Back Button */
+        .back-btn {
+            position: fixed;
+            top: calc(env(safe-area-inset-top) + 15px);
+            left: 20px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(45deg, #ffd700, #ffed4a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-decoration: none;
+            color: #333;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .back-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.6);
+        }
+
+        @media (max-width: 768px) {
+            .timeline::before {
+                left: 20px;
+            }
+
+            .timeline-item,
+            .timeline-item:nth-child(even) {
+                padding-left: 50px;
+                padding-right: 0;
+                justify-content: flex-start;
+            }
+
+            .timeline-item:nth-child(odd) .timeline-dot,
+            .timeline-item:nth-child(even) .timeline-dot {
+                left: 10px;
+                right: auto;
+            }
+
+            .page-title {
+                font-size: 1.8rem;
+                padding-top: calc(env(safe-area-inset-top) + 75px);
+            }
+        }
+    </style>
     <link rel="stylesheet" href="mobile-webview.css">
 </head>
 <body>
@@ -17,29 +346,196 @@
     <div class="music-toggle" id="musicToggle" title="Toggle Music">
         <span class="music-icon">🎵</span>
     </div>
-    <a href="cake-advanced.html" class="back-btn" title="Go Back">←</a>
-    <div class="custom-cursor">
-        <svg viewBox="0 0 24 24">
-            <path fill="#ff69b4" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-        </svg>
-    </div>
+    <a href="wishes.html" class="back-btn" title="Go Back">←</a>
 
-    <div class="container">
-        <h1>Happy Birthday Teje 💖</h1>
+    <!-- CUSTOMIZE: Change the title and subtitle -->
+    <h1 class="page-title">Our Journey Together 💫</h1>
+    <p class="page-subtitle">From Strangers to Best Friends</p>
 
-        <div id="reasons-container"></div>
+    <div class="timeline">
+        <!-- CUSTOMIZE: Add your timeline events here -->
+        <!-- Copy and paste timeline-item blocks for more events -->
 
-        <button class="shuffle-button">Click Here... 💕</button>
-        <div class="reason-counter"></div>
-
-        <div class="ending-section">
-            <div class="teddy-hug">
-                <img src="./photo-1.jpg" alt="Special Photo">
+        <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+                <div class="timeline-emoji">💬</div>
+                <!-- CUSTOMIZE: Change date -->
+                <div class="timeline-date">2015</div>
+                <!-- CUSTOMIZE: Change title -->
+                <div class="timeline-title">First Meeting</div>
+                <!-- CUSTOMIZE: Change description -->
+                <div class="timeline-desc">We exchanged our names and started knowing each other at school, but we were still just two students who barely knew each other..</div>
             </div>
-            <div class="ending-text">You're the BEST! 💖</div>
+        </div>
+
+        <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+                <div class="timeline-emoji">👋</div>
+                <div class="timeline-date">2016</div>
+                <div class="timeline-title">Getting to Know Each Other</div>
+                <div class="timeline-desc">We started seeing each other more often at school and slowly became familiar faces, even though we still weren’t friends.</div>
+            </div>
+        </div>
+        <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+                <div class="timeline-emoji">🤝</div>
+                <div class="timeline-date">2017</div>
+                <div class="timeline-title">Getting Closer</div>
+                <div class="timeline-desc">Little by little, we started talking more at school and becoming comfortable around each other. Our friendship was quietly beginning, without either of us realizing it.</div>
+            </div>
+        </div>
+        <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+                <div class="timeline-emoji">😊🚀</div>
+                <div class="timeline-date">2018</div>
+                <div class="timeline-title">First Adventure</div>
+                <div class="timeline-desc">Our first little adventure sharing answers during exams, quietly helping each other out, and turning a stressful school moment into one of our funniest memories together.</div>
+            </div>
+        </div>
+        
+        <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+                <div class="timeline-emoji">⚡⏳</div>
+                <div class="timeline-date">Through The Journey</div>
+                <div class="timeline-title">Ups and Downs</div>
+                <div class="timeline-desc">We’ve had our share of ups and downs, misunderstandings and difficult moments, but we never gave up on each other. No matter what happened, we always found our way back. That’s what makes our friendship truly special.</div>
+            </div>
+        </div>
+        <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+                <div class="timeline-emoji">✨</div>
+                <div class="timeline-date">2019</div>
+                <div class="timeline-title">A Special Year</div>
+                <div class="timeline-desc">As our school days were coming to an end, we spent more and more time together at tuition sitting beside each other, learning, teaching, laughing, and making countless memories. Somewhere along the way, we became best friends, so close that sometimes we didn’t even need words we could understand each other just by looking into each other’s eyes. It was only when we were about to part ways that we truly realized how special our friendship had become.</div>
+            </div>
+        </div>
+        <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+                <div class="timeline-emoji">🎂</div>
+                <!-- CUSTOMIZE: Change to their birthday date -->
+                <div class="timeline-date">September 12, 2026</div>
+                <div class="timeline-title">Your Birthday!</div>
+                <!-- CUSTOMIZE: Update the message -->
+                <div class="timeline-desc">And here we are, celebrating YOU! Another year of our amazing friendship... 💖</div>
+            </div>
         </div>
     </div>
 
-    <script src="wishes.js"></script>
+    <!-- Friendship Receipt - CUSTOMIZE all values -->
+    <div class="receipt-container">
+        <div class="receipt-header">
+            <div class="receipt-title">🧾 FRIENDSHIP RECEIPT</div>
+            <!-- CUSTOMIZE: Change subtitle -->
+            <div class="receipt-subtitle">Best Friends Inc.</div>
+        </div>
+        <div class="receipt-row">
+            <span class="receipt-label">Years of Friendship:</span>
+            <!-- CUSTOMIZE: Update value -->
+            <span class="receipt-value">12+ years</span>
+        </div>
+        <div class="receipt-row">
+            <span class="receipt-label">First Meeting:</span>
+            <!-- CUSTOMIZE: Update date -->
+            <span class="receipt-value">2015</span>
+        </div>
+        <div class="receipt-row">
+            <span class="receipt-label">Adventures Together:</span>
+            <span class="receipt-value">Many 📍</span>
+        </div>
+        <div class="receipt-row">
+            <span class="receipt-label">Laughs Shared:</span>
+            <span class="receipt-value">Countless 😄</span>
+        </div>
+        <div class="receipt-row">
+            <span class="receipt-label">Inside Jokes:</span>
+            <span class="receipt-value">Too many!</span>
+        </div>
+        <div class="receipt-row">
+            <span class="receipt-label">Memories Made:</span>
+            <span class="receipt-value">∞ Infinite</span>
+        </div>
+        <div class="receipt-total">
+            <strong>TOTAL FRIENDSHIP VALUE: PRICELESS 💖</strong>
+        </div>
+        <div class="receipt-footer">
+            Thank you for being an amazing friend!<br>
+            <!-- CUSTOMIZE: Change your name -->
+            - Freddi!! 💖
+        </div>
+    </div>
+
+    <button class="next-btn" onclick="goToMemories()">View Our Memories 📸</button>
+
+    <script>
+        // Music Control
+        const bgMusic = document.getElementById('bgMusic');
+        const musicToggle = document.getElementById('musicToggle');
+        const musicIcon = musicToggle.querySelector('.music-icon');
+
+        function toggleMusic() {
+            if (bgMusic.paused) {
+                bgMusic.play();
+                musicToggle.classList.add('playing');
+                musicIcon.textContent = '🎵';
+                localStorage.setItem('musicPlaying', 'true');
+            } else {
+                bgMusic.pause();
+                musicToggle.classList.remove('playing');
+                musicIcon.textContent = '🔇';
+                localStorage.setItem('musicPlaying', 'false');
+            }
+        }
+
+        musicToggle.addEventListener('click', toggleMusic);
+
+        if (localStorage.getItem('musicPlaying') === 'true') {
+            bgMusic.play().then(() => {
+                musicToggle.classList.add('playing');
+                musicIcon.textContent = '🎵';
+            }).catch(() => {
+                musicIcon.textContent = '🔇';
+            });
+        }
+
+        // Timeline animation on scroll
+        const timelineItems = document.querySelectorAll('.timeline-item');
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.3 });
+
+        timelineItems.forEach(item => observer.observe(item));
+
+        // Initial animation for visible items
+        setTimeout(() => {
+            timelineItems.forEach((item, index) => {
+                setTimeout(() => {
+                    item.classList.add('visible');
+                }, index * 200);
+            });
+        }, 500);
+
+        // Navigation
+        function goToMemories() {
+            gsap.to('body', {
+                opacity: 0,
+                duration: 0.8,
+                onComplete: () => {
+                    window.location.href = 'memories.html';
+                }
+            });
+        }
+    </script>
 </body>
 </html>
