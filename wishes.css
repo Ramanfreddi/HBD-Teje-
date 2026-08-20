@@ -4,7 +4,6 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Bubblegum+Sans&family=Comic+Neue:wght@700&family=Quicksand:wght@500&display=swap');
 
-/* Force single-finger vertical touch scrolling and prevent webview locks */
 html, body {
     width: 100% !important;
     max-width: 100% !important;
@@ -38,7 +37,6 @@ body {
     color: #4a4a4a;
 }
 
-/* Ensure background/decorations NEVER block single-finger touch drag */
 .custom-cursor, 
 .floating, 
 .gif-overlay {
@@ -143,7 +141,7 @@ h1 {
     transition: all 0.3s;
     font-family: 'Comic Neue', cursive;
     box-shadow: 0 5px 15px rgba(255, 105, 180, 0.3);
-    touch-action: auto !important;
+    touch-action: manipulation !important;
 }
 
 .shuffle-button.story-mode {
@@ -229,7 +227,7 @@ h1 {
     z-index: 1000;
     box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4);
     transition: transform 0.3s, box-shadow 0.3s;
-    touch-action: auto !important;
+    touch-action: manipulation !important;
 }
 
 .music-toggle:hover {
@@ -264,7 +262,7 @@ h1 {
     color: white;
     font-size: 1.5rem;
     font-weight: bold;
-    touch-action: auto !important;
+    touch-action: manipulation !important;
 }
 
 .back-btn:hover {
