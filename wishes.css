@@ -1,3 +1,6 @@
+:root {
+  color-scheme: only light;
+}
 @import url('https://fonts.googleapis.com/css2?family=Bubblegum+Sans&family=Comic+Neue:wght@700&family=Quicksand:wght@500&display=swap');
 
 * {

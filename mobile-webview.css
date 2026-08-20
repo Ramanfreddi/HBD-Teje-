@@ -1,3 +1,6 @@
+:root {
+  color-scheme: only light;
+}
 /* Shared phone and in-app webview finishing touches. */
 html {
     min-height: 100%;
