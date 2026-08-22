@@ -49,9 +49,7 @@ onAuthStateChanged(auth, async (user) => {
     document.body.classList.remove('auth-pending');
   } catch (error) {
     console.error('Unable to verify account approval.', error);
-    document.body.classList.remove('auth-pending');
-    document.body.innerHTML = '<main style="max-width:560px;margin:12vh auto;padding:28px;font:600 16px system-ui;text-align:center;color:#654465"><h1>Unable to check account access</h1><p>Firestore could not read your user profile. Deploy the Firestore rules and make sure /users/{uid} exists for this account.</p><button id="retryAccess" type="button">Try again</button><button id="signOutAccess" type="button">Sign out</button></main>';
-    document.getElementById('retryAccess').onclick = () => window.location.reload();
-    document.getElementById('signOutAccess').onclick = () => signOut(auth);
+    await signOut(auth);
+    redirectToLogin();
   }
 });
