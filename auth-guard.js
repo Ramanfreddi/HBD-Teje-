@@ -30,18 +30,7 @@ onAuthStateChanged(auth, async (user) => {
 
   try {
     const profile = await getDoc(doc(db, 'users', user.uid));
-    if (!profile.exists()) {
-      redirectToPending();
-      return;
-    }
-
-    const profileData = profile.data();
-    if (profileData.role === 'admin') {
-      window.location.replace(new URL('admin.html', window.location.href));
-      return;
-    }
-
-    if (profileData.approved !== true) {
+    if (!profile.exists() || profile.data().approved !== true) {
       redirectToPending();
       return;
     }

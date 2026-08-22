@@ -21,7 +21,7 @@
   const next=new URLSearchParams(location.search).get('next');const destination=next&&next!=='login.html'&&/^[a-zA-Z0-9_-]+\.html(?:\?.*)?$/.test(next)?next:'index.html';
   const provider=new GoogleAuthProvider();provider.setCustomParameters({prompt:'select_account'});
   async function createProfile(user){await setDoc(doc(db,'users',user.uid),{uid:user.uid,email:user.email,approved:false,role:'user',createdAt:serverTimestamp()})}
-  async function routeUser(user){const profile=await getDoc(doc(db,'users',user.uid));if(!profile.exists())throw Object.assign(new Error('User profile is missing.'),{code:'profile-not-found'});const data=profile.data();location.assign(data.role==='admin'?'admin.html':data.approved===true?destination:'pending-approval.html')}
+  async function routeUser(user){const profile=await getDoc(doc(db,'users',user.uid));location.assign(profile.exists()&&profile.data().approved===true?destination:'pending-approval.html')}
   function setNotice(text,type=''){notice.textContent=text;notice.className='notice '+type}function busy(value){submit.disabled=value;google.disabled=value;submit.textContent=value?'Please wait…':signup?'Create account':'Sign in'}
   function setMode(isSignup){signup=isSignup;$('signinTab').classList.toggle('active',!signup);$('signupTab').classList.toggle('active',signup);$('confirmField').hidden=!signup;$('forgotRow').hidden=signup;$('headingText').textContent=signup?'Create an account to keep your birthday space private.':'Sign in to unlock the birthday surprise.';$('password').autocomplete=signup?'new-password':'current-password';submit.textContent=signup?'Create account':'Sign in';setNotice('')}
   $('signinTab').onclick=()=>setMode(false);$('signupTab').onclick=()=>setMode(true);
