@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Account pending approval</title>
+  <style>
+    *{box-sizing:border-box}body{min-height:100vh;margin:0;display:grid;place-items:center;padding:24px;color:#654465;font:600 16px system-ui,sans-serif;background:linear-gradient(135deg,#ffe3f0,#e8e3ff 55%,#dff6ff)}main{width:min(100%,480px);padding:40px 32px;text-align:center;border:1px solid #fff;border-radius:28px;background:#ffffffb8;box-shadow:0 24px 60px #68406a2b}h1{margin:12px 0;color:#d94b98;font-size:2rem}p{line-height:1.6}.icon{font-size:3rem}button{margin-top:14px;padding:11px 18px;border:0;border-radius:12px;cursor:pointer;color:#fff;background:#9472df;font:inherit}
+  </style>
+</head>
+<body>
+  <main><div class="icon">⏳</div><h1>Account Pending Approval</h1><p>Your account was created successfully. An administrator must approve it before you can access the birthday space.</p><p id="email"></p><button id="signOut">Sign out</button></main>
+  <script type="module">
+    import { onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js';
+    import { doc, getDoc } from 'https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js';
+    import { auth, db } from './firebase-config.js';
+    onAuthStateChanged(auth, async user => {if(!user){location.replace('login.html');return}document.getElementById('email').textContent=user.email;const profile=await getDoc(doc(db,'users',user.uid));if(profile.exists()&&profile.data().approved===true)location.replace('index.html')});
+    document.getElementById('signOut').onclick=()=>signOut(auth);
+  </script>
+</body>
+</html>

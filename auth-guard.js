@@ -1,5 +1,6 @@
 import { onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js';
-import { auth } from './firebase-config.js';
+import { doc, getDoc } from 'https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js';
+import { auth, db } from './firebase-config.js';
 
 const loginUrl = new URL('login.html', window.location.href);
 const returnTo = `${window.location.pathname.split('/').pop() || 'index.html'}${window.location.search}`;
@@ -10,6 +11,10 @@ let activityListenersAttached = false;
 function redirectToLogin() {
   loginUrl.searchParams.set('next', returnTo);
   window.location.replace(loginUrl.href);
+}
+
+function redirectToPending() {
+  window.location.replace(new URL('pending-approval.html', window.location.href));
 }
 
 async function endInactiveSession() {
@@ -43,12 +48,24 @@ function enableInactivityLogout() {
   resetInactivityTimer();
 }
 
-onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(auth, async (user) => {
   if (!user) {
     redirectToLogin();
     return;
   }
 
-  document.body.classList.remove('auth-pending');
-  enableInactivityLogout();
+  try {
+    const profile = await getDoc(doc(db, 'users', user.uid));
+    if (!profile.exists() || profile.data().approved !== true) {
+      redirectToPending();
+      return;
+    }
+
+    document.body.classList.remove('auth-pending');
+    enableInactivityLogout();
+  } catch (error) {
+    console.error('Unable to verify account approval.', error);
+    await signOut(auth);
+    redirectToLogin();
+  }
 });
