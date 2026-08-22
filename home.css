@@ -24,25 +24,6 @@ body {
     position: relative;
 }
 
-.logout-button {
-    position: fixed;
-    top: 18px;
-    left: 18px;
-    z-index: 10;
-    padding: 10px 16px;
-    border: 1px solid rgba(255, 255, 255, .9);
-    border-radius: 999px;
-    color: #8a3971;
-    background: rgba(255, 255, 255, .82);
-    box-shadow: 0 8px 20px rgba(139, 62, 119, .16);
-    cursor: pointer;
-    font: 700 .85rem 'Arial Rounded MT Bold', Arial, sans-serif;
-    transition: transform .2s ease, background .2s ease;
-}
-
-.logout-button:hover { transform: translateY(-2px); background: #fff; }
-.logout-button:disabled { cursor: wait; opacity: .65; }
-
 .ambient { position: fixed; width: 34vmax; aspect-ratio: 1; border-radius: 50%; filter: blur(35px); opacity: .34; pointer-events: none; z-index: 0; animation: drift 16s ease-in-out infinite alternate; }
 .ambient-one { background: #ff8bc9; top: -12vmax; left: -10vmax; }
 .ambient-two { background: #8ed4ff; bottom: -15vmax; right: -8vmax; animation-delay: -8s; }
