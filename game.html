@@ -261,7 +261,7 @@
         : '<h2>So close! &#128150;</h2><p>You caught ' + score + ' hearts. One more round?</p><button class="play" id="again">Try again</button>';
       overlay.classList.remove('hidden');
       document.getElementById('again').addEventListener('click', startGame);
-      playButton.textContent = 'Play again &#10024;';
+      playButton.textContent = 'Play again';
       message.textContent = won ? 'A little extra love, just for you.' : 'The hearts are cheering for you!';
     }
 
