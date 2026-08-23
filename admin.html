@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Approval dashboard</title>
+  <style>
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;padding:32px;color:#563c62;font:16px Quicksand,system-ui,sans-serif;background:linear-gradient(135deg,#ffe3f0,#e8e3ff)}.panel{width:min(100%,760px);margin:auto;padding:28px;border-radius:24px;background:#ffffffc9;box-shadow:0 20px 55px #79476a2b}h1{margin-top:0;color:#d94b98}.top{display:flex;justify-content:space-between;gap:16px;align-items:center}.user{display:flex;justify-content:space-between;gap:20px;align-items:center;padding:15px 0;border-top:1px solid #eadce9}.user p{margin:4px 0;color:#876b85;font-size:.9rem}button{border:0;border-radius:10px;padding:10px 14px;cursor:pointer;color:#fff;font-weight:700;background:#9b73d8}button:hover{filter:brightness(.96)}#empty{color:#876b85}.auth-pending>*{visibility:hidden}@media(max-width:520px){body{padding:16px}.top,.user{align-items:flex-start;flex-direction:column}.user{gap:10px}}
+  </style>
+</head>
+<body class="auth-pending">
+  <main class="panel">
+    <div class="top"><div><h1>Approval dashboard</h1><p>Accounts waiting to access the birthday surprise.</p></div><button id="signout" type="button">Sign out</button></div>
+    <div id="users" aria-live="polite"><p id="empty">Loading pending accounts…</p></div>
+  </main>
+  <script type="module">
+    import { collection, getDocs, query, updateDoc, where, doc } from 'https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js';
+    import { signOut } from 'https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js';
+    import { auth, db } from './firebase-config.js';
+    const users=document.getElementById('users');
+    const escapeHtml=value=>String(value).replace(/[&<>'"]/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
+    async function loadPendingUsers(){try{const snapshot=await getDocs(query(collection(db,'users'),where('isApproved','==',false)));const pending=snapshot.docs.filter(item=>item.data().role!=='admin');if(!pending.length){users.innerHTML='<p id="empty">No accounts are waiting for approval.</p>';return}users.innerHTML=pending.map(item=>`<article class="user"><div><strong>${escapeHtml(item.data().email||'No email')}</strong><p>Account ID: ${escapeHtml(item.id)}</p></div><button type="button" data-id="${escapeHtml(item.id)}">Approve</button></article>`).join('');users.querySelectorAll('[data-id]').forEach(button=>button.addEventListener('click',async()=>{button.disabled=true;button.textContent='Approving…';try{await updateDoc(doc(db,'users',button.dataset.id),{isApproved:true});await loadPendingUsers()}catch(error){console.error(error);button.disabled=false;button.textContent='Try again'}}))}catch(error){console.error(error);users.innerHTML='<p id="empty">Could not load pending accounts. Check Firestore rules.</p>'}}
+    document.getElementById('signout').addEventListener('click',()=>signOut(auth));
+    loadPendingUsers();
+  </script>
+  <script type="module" src="auth-guard.js"></script>
+</body>
+</html>
