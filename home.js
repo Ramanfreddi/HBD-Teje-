@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // ===== CONFIGURATION - CUSTOMIZE THESE! =====
     // CUSTOMIZE: Set the birthday date (format: 'Month Day, Year HH:MM:SS')
-    const birthdayDate = new Date('September 12, 2025 00:00:00').getTime();
+    const birthdayDate = new Date('September 12, 2026 00:00:00').getTime();
 
     // CUSTOMIZE: Change this greeting message
     const greetingText = "Hey Teje! You're one of the most amazing people I've ever known! 💖";
@@ -25,10 +25,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // ===== DOM ELEMENTS =====
     const countdownSection = document.getElementById('countdown-section');
-    const passwordGate = document.getElementById('password-gate');
-    const passwordForm = document.getElementById('password-form');
-    const passwordInput = document.getElementById('birthday-password');
-    const passwordError = document.getElementById('password-error');
     const birthdayContent = document.getElementById('birthday-content');
     const cursor = document.querySelector('.cursor');
     const bgMusic = null;
@@ -37,15 +33,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // ===== STATE =====
     let birthdayAnimationsStarted = false;
-    let passwordUnlocked = false;
-    let passwordGateShown = false;
     let charIndex = 0;
 
     function revealBirthdayContent() {
-        if (passwordGate) {
-            passwordGate.hidden = true;
-            passwordGate.style.display = 'none';
-        }
         if (birthdayContent) birthdayContent.style.display = 'block';
 
         if (!birthdayAnimationsStarted) {
@@ -54,38 +44,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    function showPasswordGate() {
+    function revealBirthdaySurprise() {
         if (countdownSection) countdownSection.style.display = 'none';
-        if (passwordUnlocked) {
-            revealBirthdayContent();
-            return;
-        }
-        if (passwordGate) {
-            passwordGate.hidden = false;
-            passwordGate.style.display = 'grid';
-        }
-        if (!passwordGateShown && passwordInput) passwordInput.focus();
-        passwordGateShown = true;
-    }
-
-    if (passwordInput) {
-        passwordInput.addEventListener('input', function() {
-            this.value = this.value.replace(/\D/g, '');
-            if (passwordError) passwordError.textContent = '';
-        });
-    }
-
-    if (passwordForm) {
-        passwordForm.addEventListener('submit', function(event) {
-            event.preventDefault();
-            if (passwordInput && passwordInput.value === '669199') {
-                passwordUnlocked = true;
-                revealBirthdayContent();
-            } else if (passwordError) {
-                passwordError.textContent = 'That password is not quite right. Try again!';
-                if (passwordInput) passwordInput.select();
-            }
-        });
+        revealBirthdayContent();
     }
 
     // A soft star layer keeps the page feeling alive without distracting from the message.
@@ -276,7 +237,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (distance <= 0) {
             // Birthday has arrived!
-            showPasswordGate();
+            revealBirthdaySurprise();
             return;
         }
 

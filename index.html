@@ -54,19 +54,7 @@
                 </div>
             </div>
         </div>
-        <section id="password-gate" class="password-gate" aria-labelledby="password-title" hidden>
-            <div class="password-card">
-                <div class="password-icon" aria-hidden="true">&#128273;</div>
-                <h2 id="password-title">One little secret...</h2>
-                <p>Enter the 6-digit password to open your birthday surprise.</p>
-                <form id="password-form" novalidate>
-                    <label class="sr-only" for="birthday-password">6-digit password</label>
-                    <input id="birthday-password" type="password" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" placeholder="••••••" required>
-                    <button type="submit">Unlock &#10024;</button>
-                </form>
-                <p id="password-error" class="password-error" role="alert" aria-live="polite"></p>
-            </div>
-        </section>
+        <!-- Birthday content is revealed automatically when the countdown ends. -->
         <div id="birthday-content" class="birthday-content" style="display: none;">
             <!-- CUSTOMIZE: Change the age -->
             <div class="level-up-badge">Level 23 Unlocked! 🎮</div>
