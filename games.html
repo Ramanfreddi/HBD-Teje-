@@ -37,6 +37,31 @@
 
         .back-btn:hover { transform: translateY(-3px); }
 
+        .account-actions {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 2;
+            display: flex;
+            gap: 0.65rem;
+        }
+
+        .account-btn {
+            padding: 11px 20px;
+            border: 0;
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.75);
+            color: #d84b9a;
+            cursor: pointer;
+            font: inherit;
+            font-weight: 700;
+            text-decoration: none;
+            box-shadow: 0 5px 18px rgba(136, 74, 139, 0.2);
+            transition: transform 0.25s ease;
+        }
+
+        .account-btn:hover { transform: translateY(-3px); }
+
         header { text-align: center; margin-bottom: 2.5rem; }
         h1 {
             margin: 0;
@@ -79,12 +104,18 @@
         @media (max-width: 600px) {
             body { padding-top: 5.5rem; }
             .back-btn { top: 14px; left: 14px; }
+            .account-actions { top: 14px; right: 14px; gap: 0.4rem; }
+            .account-btn { padding: 10px 14px; }
         }
     </style>
     <link rel="stylesheet" href="mobile-webview.css">
 </head>
 <body>
     <a class="back-btn" href="cake-advanced.html">&#8592;</a>
+    <nav class="account-actions" aria-label="Account actions">
+        <a id="adminButton" class="account-btn" href="admin.html" hidden>Admin</a>
+        <button id="logoutButton" class="account-btn" type="button">Logout</button>
+    </nav>
 
     <header>
         <h1>Our Little Games</h1>
@@ -129,6 +160,29 @@
             <span class="play-label">Play now &#8594;</span>
         </a>
     </main>
+<script type="module">
+    import { onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js';
+    import { doc, getDoc } from 'https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js';
+    import { auth, db } from './firebase-config.js';
+
+    const logoutButton = document.getElementById('logoutButton');
+    const adminButton = document.getElementById('adminButton');
+
+    logoutButton.addEventListener('click', async () => {
+        logoutButton.disabled = true;
+        await signOut(auth);
+    });
+
+    onAuthStateChanged(auth, async (user) => {
+        if (!user) return;
+        try {
+            const profile = await getDoc(doc(db, 'users', user.uid));
+            adminButton.hidden = profile.exists() && profile.data().role === 'admin' ? false : true;
+        } catch (error) {
+            console.error('Unable to check admin access:', error);
+        }
+    });
+</script>
 <script type="module" src="auth-guard.js"></script>
 </body>
 </html>
